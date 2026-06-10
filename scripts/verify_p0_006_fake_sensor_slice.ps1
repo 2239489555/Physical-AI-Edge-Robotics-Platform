@@ -7,6 +7,7 @@ $ErrorActionPreference = "Stop"
 $packageDir = Join-Path $RepoRoot "ros2_ws/src/edge_reliability_fake_sensor"
 $smokeScriptPath = Join-Path $RepoRoot "scripts/run_p0_006_fake_sensor_smoke.sh"
 $smokeReportVerifierPath = Join-Path $RepoRoot "scripts/verify_p0_006_smoke_report.ps1"
+$completionGatePath = Join-Path $RepoRoot "scripts/verify_p0_006_completion_gate.ps1"
 $scriptsReadmePath = Join-Path $RepoRoot "scripts/README.md"
 $passFixturePath = Join-Path $RepoRoot "scripts/testdata/p0_006_smoke_report_pass.txt"
 $failFixturePath = Join-Path $RepoRoot "scripts/testdata/p0_006_smoke_report_fail.txt"
@@ -33,6 +34,10 @@ if (-not (Test-Path -LiteralPath $smokeScriptPath -PathType Leaf)) {
 
 if (-not (Test-Path -LiteralPath $smokeReportVerifierPath -PathType Leaf)) {
     $missing += "scripts/verify_p0_006_smoke_report.ps1"
+}
+
+if (-not (Test-Path -LiteralPath $completionGatePath -PathType Leaf)) {
+    $missing += "scripts/verify_p0_006_completion_gate.ps1"
 }
 
 if (-not (Test-Path -LiteralPath $scriptsReadmePath -PathType Leaf)) {
@@ -76,6 +81,7 @@ $config = Read-PackageFile "config/fake_sensor.yaml"
 $readme = Read-PackageFile "README.md"
 $smokeScript = Get-Content -Raw -LiteralPath $smokeScriptPath
 $smokeReportVerifier = Get-Content -Raw -LiteralPath $smokeReportVerifierPath
+$completionGate = Get-Content -Raw -LiteralPath $completionGatePath
 $scriptsReadme = Get-Content -Raw -LiteralPath $scriptsReadmePath
 $passFixture = Get-Content -Raw -LiteralPath $passFixturePath
 $failFixture = Get-Content -Raw -LiteralPath $failFixturePath
@@ -155,7 +161,8 @@ foreach ($text in @(
     "runtime/bags/p0-006",
     "fault_mode: off",
     "bash scripts/run_p0_006_fake_sensor_smoke.sh",
-    "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_006_smoke_report.ps1"
+    "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_006_smoke_report.ps1",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_006_completion_gate.ps1"
 )) {
     Assert-Contains "README.md" $readme $text
 }
@@ -231,8 +238,18 @@ foreach ($text in @(
 }
 
 foreach ($text in @(
+    "param(",
+    "verify_p0_006_fake_sensor_slice.ps1",
+    "verify_p0_006_smoke_report.ps1",
+    "P0-006 completion gate checks passed"
+)) {
+    Assert-Contains "scripts/verify_p0_006_completion_gate.ps1" $completionGate $text
+}
+
+foreach ($text in @(
     "run_p0_006_fake_sensor_smoke.sh",
     "verify_p0_006_smoke_report.ps1",
+    "verify_p0_006_completion_gate.ps1",
     "P0-006",
     "runtime/results"
 )) {

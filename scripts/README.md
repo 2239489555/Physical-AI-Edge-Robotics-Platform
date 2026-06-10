@@ -30,3 +30,5 @@ Use `verify_p0_006_fake_sensor_slice.ps1` from Windows to check that the P0-006 
 Use `run_p0_006_fake_sensor_smoke.sh` on Jetson to run the P0-006 build, launch, topic, frequency, and rosbag smoke check. It writes logs under `runtime/logs/`, command outputs under `runtime/results/`, and bags under `runtime/bags/p0-006/`.
 
 Use `verify_p0_006_smoke_report.ps1` from Windows to check a returned P0-006 `runtime/results/p0_006_smoke_report.txt` before marking the issue complete.
+
+Use `verify_p0_006_completion_gate.ps1` from Windows after a returned P0-006 report exists to run both the static implementation gate and the returned-report gate.

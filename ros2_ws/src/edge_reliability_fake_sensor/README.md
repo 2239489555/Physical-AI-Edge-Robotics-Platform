@@ -22,9 +22,10 @@ For the full P0-006 smoke check, run the project script from the repository root
 bash scripts/run_p0_006_fake_sensor_smoke.sh
 cat runtime/results/p0_006_smoke_report.txt
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_006_smoke_report.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_006_completion_gate.ps1
 ```
 
-It builds the package, launches the node, checks topic metadata, echoes one sample, measures frequency, records a short bag, and writes a `P0-006_RESULT` summary under `runtime/results/`. After the report is copied back to a Windows checkout, `verify_p0_006_smoke_report.ps1` checks whether the evidence is strong enough to close P0-006.
+It builds the package, launches the node, checks topic metadata, echoes one sample, measures frequency, records a short bag, and writes a `P0-006_RESULT` summary under `runtime/results/`. After the report is copied back to a Windows checkout, `verify_p0_006_smoke_report.ps1` checks the runtime evidence, and `verify_p0_006_completion_gate.ps1` runs both the static implementation gate and returned-report gate.
 
 If the build output scrolls away, inspect the saved log:
 
