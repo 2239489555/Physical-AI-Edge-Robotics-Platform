@@ -1,0 +1,8 @@
+tracer_publisher:
+  ros__parameters:
+    topic: edge/tracer
+    publish_hz: 10.0
+
+tracer_subscriber:
+  ros__parameters:
+    topic: edge/tracer

@@ -4,6 +4,7 @@ ROS 2 packages for the Edge Robotics Reliability Lab will live under this direct
 
 Planned P0 packages include:
 
+- `edge_reliability_tracer`: minimal C++ publisher/subscriber slice for P0-003.
 - Message and interface contracts.
 - Fake sensor pipeline.
 - Metrics processor.

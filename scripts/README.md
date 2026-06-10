@@ -18,3 +18,5 @@ Use `collect_system_baseline.sh` on the Jetson before installing dependencies. I
 Use `summarize_system_baseline.sh` after collection to generate a sanitized summary that can be shared for dependency planning.
 
 Use `summarize_apt_simulation.sh` after an `apt install -s ... | tee ...` dry run to extract removals, upgrades, watched package actions, and the final apt count before approving a host install.
+
+Use `verify_ros2_minimal_slice.ps1` from Windows to statically verify the P0-003 minimal ROS 2 package files before the Jetson `colcon build`.

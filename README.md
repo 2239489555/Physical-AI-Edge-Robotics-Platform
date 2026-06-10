@@ -12,3 +12,4 @@ Start with the agent-readable PRD:
 - [Jetson phase 1 test guide](docs/testing_jetson_phase1.md)
 - [Jetson phase 2 test guide](docs/testing_jetson_phase2.md)
 - [ROS 2 Humble minimal install plan](docs/ros2_humble_install_plan.md)
+- [P0-003 minimal ROS 2 tracer package](ros2_ws/src/edge_reliability_tracer/README.md)
