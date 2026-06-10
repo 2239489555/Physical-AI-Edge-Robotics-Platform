@@ -1,0 +1,18 @@
+P0-006_RESULT
+
+Build
+colcon exit status: 0
+
+Topic Evidence
+topic info:
+Type: edge_reliability_msgs/msg/SensorSample
+topic hz:
+average rate: 12.0
+last average rate: 12.0
+
+Rosbag Evidence
+bag messages: 0
+
+Verdict
+PASS/FAIL: FAIL
+Blocker if FAIL: topic hz outside 90-110Hz: 12.0

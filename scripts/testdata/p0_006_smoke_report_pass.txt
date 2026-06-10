@@ -1,0 +1,50 @@
+P0-006_RESULT
+
+Build
+colcon exit status: 0
+build summary:
+Starting >>> edge_reliability_msgs
+Finished <<< edge_reliability_msgs [8.00s]
+Starting >>> edge_reliability_fake_sensor
+Finished <<< edge_reliability_fake_sensor [1.00s]
+Summary: 2 packages finished [9.00s]
+
+Launch
+launch pid: 12345
+launch log head:
+[fake_sensor_adapter-1] [INFO] event=startup node=fake_sensor_adapter topic=/edge/sensors/fake_primary type=edge_reliability_msgs/msg/SensorSample publish_hz=100.000 sensor_id=fake_primary frame_id=fake_sensor_frame status_mode=ok fault_mode=off qos_depth=10 qos_reliability=best_effort
+[fake_sensor_adapter-1] [INFO] event=first_publish topic=/edge/sensors/fake_primary sequence_id=0 stamp_sec=1781070000 stamp_nanosec=1
+
+Topic Evidence
+topic info:
+Type: edge_reliability_msgs/msg/SensorSample
+Publisher count: 1
+Node name: fake_sensor_adapter
+topic echo once:
+header:
+  stamp:
+    sec: 1781070000
+    nanosec: 1
+  frame_id: fake_sensor_frame
+sequence_id: 42
+sensor_id: fake_primary
+value: 0.042
+status: 0
+status_detail: ok
+topic hz:
+average rate: 99.8
+last average rate: 99.8
+
+Rosbag Evidence
+bag info:
+Messages:          760
+Topic information: Topic: /edge/sensors/fake_primary | Type: edge_reliability_msgs/msg/SensorSample | Count: 760 | Serialization Format: cdr
+bag messages: 760
+
+Git / Runtime Hygiene
+runtime artifact paths:
+/home/jetson/chengwei/runtime/bags/p0-006/fake_sensor_smoke_20260610T120000Z
+
+Verdict
+PASS/FAIL: PASS
+Blocker if FAIL: -

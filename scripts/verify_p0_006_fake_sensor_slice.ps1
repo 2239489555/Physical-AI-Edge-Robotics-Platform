@@ -6,7 +6,10 @@ $ErrorActionPreference = "Stop"
 
 $packageDir = Join-Path $RepoRoot "ros2_ws/src/edge_reliability_fake_sensor"
 $smokeScriptPath = Join-Path $RepoRoot "scripts/run_p0_006_fake_sensor_smoke.sh"
+$smokeReportVerifierPath = Join-Path $RepoRoot "scripts/verify_p0_006_smoke_report.ps1"
 $scriptsReadmePath = Join-Path $RepoRoot "scripts/README.md"
+$passFixturePath = Join-Path $RepoRoot "scripts/testdata/p0_006_smoke_report_pass.txt"
+$failFixturePath = Join-Path $RepoRoot "scripts/testdata/p0_006_smoke_report_fail.txt"
 $requiredFiles = @(
     "package.xml",
     "CMakeLists.txt",
@@ -28,8 +31,20 @@ if (-not (Test-Path -LiteralPath $smokeScriptPath -PathType Leaf)) {
     $missing += "scripts/run_p0_006_fake_sensor_smoke.sh"
 }
 
+if (-not (Test-Path -LiteralPath $smokeReportVerifierPath -PathType Leaf)) {
+    $missing += "scripts/verify_p0_006_smoke_report.ps1"
+}
+
 if (-not (Test-Path -LiteralPath $scriptsReadmePath -PathType Leaf)) {
     $missing += "scripts/README.md"
+}
+
+if (-not (Test-Path -LiteralPath $passFixturePath -PathType Leaf)) {
+    $missing += "scripts/testdata/p0_006_smoke_report_pass.txt"
+}
+
+if (-not (Test-Path -LiteralPath $failFixturePath -PathType Leaf)) {
+    $missing += "scripts/testdata/p0_006_smoke_report_fail.txt"
 }
 
 if ($missing.Count -gt 0) {
@@ -60,7 +75,10 @@ $launch = Read-PackageFile "launch/fake_sensor.launch.py"
 $config = Read-PackageFile "config/fake_sensor.yaml"
 $readme = Read-PackageFile "README.md"
 $smokeScript = Get-Content -Raw -LiteralPath $smokeScriptPath
+$smokeReportVerifier = Get-Content -Raw -LiteralPath $smokeReportVerifierPath
 $scriptsReadme = Get-Content -Raw -LiteralPath $scriptsReadmePath
+$passFixture = Get-Content -Raw -LiteralPath $passFixturePath
+$failFixture = Get-Content -Raw -LiteralPath $failFixturePath
 
 foreach ($text in @(
     "<name>edge_reliability_fake_sensor</name>",
@@ -136,7 +154,8 @@ foreach ($text in @(
     "ros2 bag record /edge/sensors/fake_primary",
     "runtime/bags/p0-006",
     "fault_mode: off",
-    "bash scripts/run_p0_006_fake_sensor_smoke.sh"
+    "bash scripts/run_p0_006_fake_sensor_smoke.sh",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_006_smoke_report.ps1"
 )) {
     Assert-Contains "README.md" $readme $text
 }
@@ -174,7 +193,46 @@ foreach ($text in @(
 }
 
 foreach ($text in @(
+    "param(",
+    "p0_006_smoke_report.txt",
+    "P0-006_RESULT",
+    "PASS/FAIL: PASS",
+    "colcon exit status: 0",
+    "Type: edge_reliability_msgs/msg/SensorSample",
+    "Node name: fake_sensor_adapter",
+    "sensor_id: fake_primary",
+    "status_detail: ok",
+    "event=startup",
+    "event=first_publish",
+    "last average rate:",
+    "bag messages:",
+    "runtime/bags/p0-006",
+    "P0-006 smoke report checks passed"
+)) {
+    Assert-Contains "scripts/verify_p0_006_smoke_report.ps1" $smokeReportVerifier $text
+}
+
+foreach ($text in @(
+    "P0-006_RESULT",
+    "PASS/FAIL: PASS",
+    "last average rate: 99.8",
+    "bag messages: 760"
+)) {
+    Assert-Contains "scripts/testdata/p0_006_smoke_report_pass.txt" $passFixture $text
+}
+
+foreach ($text in @(
+    "P0-006_RESULT",
+    "PASS/FAIL: FAIL",
+    "last average rate: 12.0",
+    "Blocker if FAIL:"
+)) {
+    Assert-Contains "scripts/testdata/p0_006_smoke_report_fail.txt" $failFixture $text
+}
+
+foreach ($text in @(
     "run_p0_006_fake_sensor_smoke.sh",
+    "verify_p0_006_smoke_report.ps1",
     "P0-006",
     "runtime/results"
 )) {
