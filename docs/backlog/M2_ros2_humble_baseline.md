@@ -1,5 +1,7 @@
 # M2 ROS 2 Humble Baseline
 
+Status: completed
+
 ## Goal
 
 Verify ROS 2 Humble development basics on the Jetson server.
@@ -28,22 +30,34 @@ This milestone proves the basic ROS 2 toolchain before project-specific packages
 
 ## Acceptance Criteria
 
-- demo_nodes_cpp talker and listener communicate.
-- `ros2 topic hz` shows expected frequency.
-- A custom C++ package builds with colcon.
-- A launch file starts the custom package.
-- rosbag records and replays a sample topic.
-- Installation and environment changes are recorded in the change ledger.
+- [x] demo_nodes_cpp talker and listener communicate.
+- [x] `ros2 topic hz` shows expected frequency.
+- [x] A custom C++ package builds with colcon.
+- [x] A launch file starts the custom package.
+- [x] rosbag records and replays a sample topic.
+- [x] Installation and environment changes are recorded in the change ledger.
+
+## Completion Evidence
+
+- ROS 2 Humble minimal host install completed after apt simulation showed `0 to remove`.
+- `demo_nodes_cpp` talker/listener communicated on `/chatter`.
+- Custom package `edge_reliability_tracer` built successfully with colcon on Jetson.
+- `ros2 launch edge_reliability_tracer tracer.launch.py` started publisher and subscriber nodes.
+- `/edge/tracer` published `std_msgs/msg/String` samples at approximately `10 Hz`.
+- `ros2 bag info` reported `77` recorded messages for `/edge/tracer`.
+- Generated build and runtime outputs stayed under ignored project-local paths.
 
 ## Verification Commands
 
 - `ros2 run demo_nodes_cpp talker`
 - `ros2 run demo_nodes_cpp listener`
-- `ros2 topic list`
-- `ros2 topic echo /chatter`
-- `ros2 topic hz /chatter`
-- `colcon build`
-- `ros2 bag record /chatter`
+- `colcon build --packages-select edge_reliability_tracer --symlink-install`
+- `ros2 launch edge_reliability_tracer tracer.launch.py`
+- `ros2 topic list -t`
+- `ros2 topic echo --once /edge/tracer std_msgs/msg/String`
+- `ros2 topic hz /edge/tracer`
+- `ros2 bag record /edge/tracer`
+- `ros2 bag info <bag_dir>`
 - `ros2 bag play <bag_dir>`
 
 ## Runtime Artifact Location

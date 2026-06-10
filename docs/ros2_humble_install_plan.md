@@ -1,6 +1,6 @@
 # ROS 2 Humble Minimal Install Plan
 
-Status: host install verified on Jetson, pending topic tools and rosbag smoke evidence
+Status: verified on Jetson for P0-003
 
 Purpose: install only the ROS 2 Humble dependencies needed for P0-003 on the company-owned Jetson server.
 
@@ -244,6 +244,16 @@ ros2 bag play runtime/bags/baseline/chatter_smoke
 - `ros2 topic hz /chatter` reports a frequency.
 - rosbag records under `runtime/bags/`.
 - `runtime/` remains ignored by git.
+
+## Observed P0-003 Evidence
+
+- `edge_reliability_tracer` built on Jetson with `Summary: 1 package finished [0.63s]`.
+- Launch started `tracer_publisher` and `tracer_subscriber`.
+- `/edge/tracer` appeared as `std_msgs/msg/String`.
+- `ros2 topic echo --once /edge/tracer std_msgs/msg/String` returned a tracer sample.
+- `ros2 topic hz /edge/tracer` reported approximately `10 Hz`.
+- `ros2 bag info` reported `77` recorded messages for `/edge/tracer`.
+- `git status --short --ignored` kept `ros2_ws/build/`, `ros2_ws/install/`, `ros2_ws/log/`, and `runtime/` ignored.
 
 ## After Verification
 
