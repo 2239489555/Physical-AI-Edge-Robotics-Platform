@@ -79,6 +79,27 @@ collect_git_status() {
   ) > "$GIT_STATUS" 2>&1 || true
 }
 
+source_setup_with_nounset_disabled() {
+  local setup_file="$1"
+  local label="$2"
+  local source_status=0
+
+  if [[ ! -f "$setup_file" ]]; then
+    fail "$label not found: $setup_file"
+  fi
+
+  # ROS 2 setup scripts may read optional variables while nounset is active.
+  set +u
+  # shellcheck source=/dev/null
+  source "$setup_file"
+  source_status="$?"
+  set -u
+
+  if [[ "$source_status" -ne 0 ]]; then
+    fail "failed to source $label"
+  fi
+}
+
 write_report() {
   mkdir -p "$RESULT_DIR"
   {
@@ -154,12 +175,7 @@ if [[ -f "$SCRIPT_DIR/setup_runtime_dirs.sh" ]]; then
   bash "$SCRIPT_DIR/setup_runtime_dirs.sh" || fail "setup_runtime_dirs.sh failed"
 fi
 
-if [[ ! -f /opt/ros/humble/setup.bash ]]; then
-  fail "/opt/ros/humble/setup.bash not found"
-fi
-
-# shellcheck source=/dev/null
-source /opt/ros/humble/setup.bash || fail "failed to source ROS 2 Humble setup"
+source_setup_with_nounset_disabled /opt/ros/humble/setup.bash "ROS 2 Humble setup"
 
 cd "$REPO_ROOT/ros2_ws" || fail "ros2_ws directory missing"
 
@@ -170,8 +186,7 @@ if [[ "$COLCON_STATUS" -ne 0 ]]; then
   fail "colcon build failed"
 fi
 
-# shellcheck source=/dev/null
-source install/setup.bash || fail "failed to source ros2_ws install setup"
+source_setup_with_nounset_disabled install/setup.bash "ros2_ws install setup"
 
 ros2 daemon stop >/dev/null 2>&1 || true
 ros2 daemon start >/dev/null 2>&1 || true

@@ -196,6 +196,12 @@ foreach ($text in @(
     "runtime/logs",
     "runtime/bags/p0-006",
     "git status --short --ignored",
+    "source_setup_with_nounset_disabled",
+    "set +u",
+    'source "$setup_file"',
+    "set -u",
+    "source_setup_with_nounset_disabled /opt/ros/humble/setup.bash",
+    "source_setup_with_nounset_disabled install/setup.bash",
     "PASS/FAIL:"
 )) {
     Assert-Contains "scripts/run_p0_006_fake_sensor_smoke.sh" $smokeScript $text
