@@ -199,9 +199,49 @@ if [[ "$?" -ne 0 ]]; then
   fail "ros2 topic info failed"
 fi
 
+if ! grep -F "Type: $TYPE" "$TOPIC_INFO" >/dev/null 2>&1; then
+  fail "topic info does not report type $TYPE"
+fi
+
+if ! grep -F "Node name: fake_sensor_adapter" "$TOPIC_INFO" >/dev/null 2>&1; then
+  fail "topic info does not show fake_sensor_adapter as publisher"
+fi
+
 timeout --signal=INT 8s ros2 topic echo --once "$TOPIC" "$TYPE" --qos-reliability best_effort | tee "$TOPIC_ECHO"
 if [[ "$?" -ne 0 ]]; then
   fail "ros2 topic echo did not receive one SensorSample"
+fi
+
+if ! grep -F "header:" "$TOPIC_ECHO" >/dev/null 2>&1; then
+  fail "echoed SensorSample is missing header"
+fi
+
+if ! grep -F "sequence_id:" "$TOPIC_ECHO" >/dev/null 2>&1; then
+  fail "echoed SensorSample is missing sequence_id"
+fi
+
+if ! grep -F "sensor_id: fake_primary" "$TOPIC_ECHO" >/dev/null 2>&1; then
+  fail "echoed SensorSample does not use sensor_id fake_primary"
+fi
+
+if ! grep -F "value:" "$TOPIC_ECHO" >/dev/null 2>&1; then
+  fail "echoed SensorSample is missing value"
+fi
+
+if ! grep -F "status:" "$TOPIC_ECHO" >/dev/null 2>&1; then
+  fail "echoed SensorSample is missing status"
+fi
+
+if ! grep -F "status_detail: ok" "$TOPIC_ECHO" >/dev/null 2>&1; then
+  fail "echoed SensorSample does not report status_detail ok"
+fi
+
+if ! grep -F "event=startup" "$LAUNCH_LOG" >/dev/null 2>&1; then
+  fail "launch log is missing structured startup event"
+fi
+
+if ! grep -F "event=first_publish" "$LAUNCH_LOG" >/dev/null 2>&1; then
+  fail "launch log is missing structured first_publish event"
 fi
 
 timeout --signal=INT 12s ros2 topic hz "$TOPIC" --qos-reliability best_effort | tee "$TOPIC_HZ"
