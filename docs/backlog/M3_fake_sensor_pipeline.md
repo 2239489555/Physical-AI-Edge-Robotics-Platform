@@ -11,7 +11,8 @@ The project has no real sensors. The fake sensor must still train real concepts:
 ## Inputs
 
 - ROS 2 Humble baseline from M2.
-- Stable topic naming and message contract.
+- Stable topic naming and message contract from `docs/interfaces/edge_reliability_contract.md`.
+- Message package `ros2_ws/src/edge_reliability_msgs`.
 
 ## Expected Outputs
 

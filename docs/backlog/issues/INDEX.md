@@ -17,7 +17,7 @@
 | P0-002 | 系统基线采集器与变更账本 | AFK | P0-001 |
 | P0-003 | ROS 2 workspace 初始化与最小 C++ 闭环（已完成） | AFK | P0-001 |
 | P0-004 | 机器人零基础上手指南与命令证据（文档完成，待复述） | HITL | P0-003 |
-| P0-005 | Edge reliability 消息定义与接口契约 | AFK | P0-003 |
+| P0-005 | Edge reliability 消息定义与接口契约（待 Jetson 验证） | AFK | P0-003 |
 | P0-006 | 100Hz fake sensor publisher 垂直切片 | AFK | P0-005 |
 | P0-007 | Processor metrics subscriber 垂直切片 | AFK | P0-006 |
 | P0-008 | rosbag 录制与回放工作流 | AFK | P0-007 |

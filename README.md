@@ -11,6 +11,7 @@ Start with the agent-readable PRD:
 - [Runtime governance](docs/runtime_governance.md)
 - [ROS 2 beginner onboarding](docs/onboarding/ros2_beginner_onboarding.md)
 - [Interview artifacts](docs/onboarding/interview_artifacts.md)
+- [Edge reliability interface contract](docs/interfaces/edge_reliability_contract.md)
 - [Jetson phase 1 test guide](docs/testing_jetson_phase1.md)
 - [Jetson phase 2 test guide](docs/testing_jetson_phase2.md)
 - [ROS 2 Humble minimal install plan](docs/ros2_humble_install_plan.md)

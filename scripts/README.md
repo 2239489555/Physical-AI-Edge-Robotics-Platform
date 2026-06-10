@@ -22,3 +22,5 @@ Use `summarize_apt_simulation.sh` after an `apt install -s ... | tee ...` dry ru
 Use `verify_ros2_minimal_slice.ps1` from Windows to statically verify the P0-003 minimal ROS 2 package files before the Jetson `colcon build`.
 
 Use `verify_p0_004_onboarding_docs.ps1` from Windows to check that the P0-004 onboarding guide and interview artifacts cover the required beginner concepts, commands, and evidence.
+
+Use `verify_p0_005_interface_contracts.ps1` from Windows to check that the P0-005 message package and interface contract cover required fields, topics, node roles, QoS, adapter boundaries, rosbag, and failure modes.
