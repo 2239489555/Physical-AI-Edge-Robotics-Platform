@@ -82,6 +82,44 @@ sudo apt install -s ros-humble-ros-base ros-dev-tools ros-humble-demo-nodes-cpp 
 
 Stop and ask for review if the simulation proposes removing NVIDIA, CUDA, JetPack, L4T, Docker, or core OS packages.
 
+## If Apt Is Locked Or Package Lists Are Stale
+
+If `sudo apt update` fails with a lock like:
+
+```text
+Could not get lock /var/lib/apt/lists/lock. It is held by process <pid> (apt-get)
+```
+
+do not remove the lock file. First inspect and wait:
+
+```bash
+ps -fp <pid>
+sudo fuser -v /var/lib/apt/lists/lock /var/lib/dpkg/lock-frontend /var/lib/dpkg/lock || true
+systemctl is-active apt-daily.service apt-daily-upgrade.service || true
+systemctl is-active apt-daily.timer apt-daily-upgrade.timer || true
+```
+
+If the process is a normal apt job, wait for it to finish, then run:
+
+```bash
+sudo apt update
+```
+
+If `apt install` later returns `404 Not Found` for Ubuntu packages, treat it as stale package lists. Do not continue installing with stale indexes. Re-run:
+
+```bash
+sudo apt update
+```
+
+If `ros-humble-*` packages are still not found after installing `ros2-apt-source`, it usually means apt has not refreshed the newly added ROS source yet. Run:
+
+```bash
+sudo apt update
+apt-cache policy ros-humble-ros-base ros-dev-tools ros-humble-demo-nodes-cpp ros-humble-demo-nodes-py
+```
+
+Only continue to simulation after the policy command shows ROS packages are available.
+
 ## Install
 
 Only after simulation looks safe:
