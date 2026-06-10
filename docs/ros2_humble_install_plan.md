@@ -131,6 +131,22 @@ sudo grep -RInE 'download\.docker\.com/linux/ubuntu|\$\(|UBUNTU_CODENAME|VERSION
 
 If the malformed entry is a deb822 source file with `Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")`, back it up and set the suite explicitly to `jammy`:
 
+If another valid Docker source already exists, for example `/etc/apt/sources.list.d/docker.list` already contains `https://download.docker.com/linux/ubuntu jammy stable`, prefer disabling the malformed duplicate deb822 source instead of creating two active Docker sources:
+
+```bash
+BAD_DOCKER_SOURCE="/etc/apt/sources.list.d/docker.sources"
+test -f "$BAD_DOCKER_SOURCE"
+mkdir -p runtime/artifacts/preflight/apt-source-backups
+sudo cp -a "$BAD_DOCKER_SOURCE" "runtime/artifacts/preflight/apt-source-backups/$(basename "$BAD_DOCKER_SOURCE").$(date -u +%Y%m%dT%H%M%SZ)"
+if sudo grep -q '^Enabled:' "$BAD_DOCKER_SOURCE"; then
+  sudo sed -i -E 's/^Enabled:.*/Enabled: no/' "$BAD_DOCKER_SOURCE"
+else
+  sudo sed -i '1i Enabled: no' "$BAD_DOCKER_SOURCE"
+fi
+```
+
+If no other valid Docker source exists, back up the deb822 source and set its suite explicitly to `jammy`:
+
 ```bash
 BAD_DOCKER_SOURCE="$(sudo grep -RIlE '^Suites: .*(\$\(|UBUNTU_CODENAME|VERSION_CODENAME)' /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null | head -n 1)"
 test -n "$BAD_DOCKER_SOURCE"
