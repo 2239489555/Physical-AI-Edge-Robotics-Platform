@@ -1,6 +1,6 @@
 # ROS 2 Humble Minimal Install Plan
 
-Status: planned
+Status: host install verified on Jetson, pending topic tools and rosbag smoke evidence
 
 Purpose: install only the ROS 2 Humble dependencies needed for P0-003 on the company-owned Jetson server.
 
@@ -197,7 +197,8 @@ Open a fresh shell or source ROS manually:
 ```bash
 source /opt/ros/humble/setup.bash
 ros2 --help
-colcon --version
+colcon --help | head -n 20
+dpkg-query --show python3-colcon-core
 ros2 pkg list | grep '^demo_nodes_cpp$'
 ```
 
@@ -236,7 +237,7 @@ ros2 bag play runtime/bags/baseline/chatter_smoke
 ## Expected Evidence
 
 - `ros2 --help` works.
-- `colcon --version` works.
+- `colcon --help` works, and `dpkg-query --show python3-colcon-core` reports the installed colcon core package.
 - talker/listener communicate.
 - `/chatter` appears in `ros2 topic list`.
 - `ros2 topic echo /chatter --once` prints one message.
@@ -253,7 +254,8 @@ ROS apt source existed before install? yes/no
 Install simulation removed packages? no/yes + summary
 Installed packages command completed? yes/no
 ros2 --help works? yes/no
-colcon --version works? yes/no
+colcon --help works? yes/no
+python3-colcon-core package visible? yes/no
 demo_nodes_cpp talker/listener works? yes/no
 rosbag record/play works? yes/no
 Any errors:

@@ -85,6 +85,36 @@ Notes:
   Run apt simulation before real install. Stop if apt proposes removing NVIDIA, CUDA, JetPack, or core system packages.
 ```
 
+### 2026-06-10 - Observed ROS 2 Humble minimal install outcome
+
+```text
+Date: 2026-06-10
+Operator: User on Jetson
+Task: P0-003 preparation - verify minimal ROS 2 Humble install outcome
+Command:
+  sudo apt install -y ros-humble-ros-base ros-dev-tools ros-humble-demo-nodes-cpp ros-humble-demo-nodes-py
+Reason:
+  Install ROS 2 Humble runtime, colcon tooling, demo nodes, and rosbag-capable packages after apt simulation showed 0 removals.
+Files changed:
+  /opt/ros/humble and apt package database changed by apt install.
+Packages installed:
+  Simulation showed 326 newly installed packages including ros-humble-ros-base, ros-dev-tools, ros-humble-demo-nodes-cpp, ros-humble-demo-nodes-py, ros-humble-rosbag2, and colcon-related Python packages.
+Packages removed:
+  None observed in simulation.
+Services changed:
+  None observed.
+Environment changed:
+  No shell rc change. ROS environment is sourced manually with source /opt/ros/humble/setup.bash.
+Verification:
+  ros2 --help works. demo_nodes_cpp, demo_nodes_py, and rosbag2 are visible in ros2 pkg list. demo_nodes_cpp talker and listener communicate on /chatter.
+Rollback:
+  Do not rollback casually. If needed, plan explicit apt remove/purge after reviewing installed packages and impact on the company server.
+Risk:
+  Moderate. Host ROS packages were installed. Simulation also showed upgrades to libsqlite3-0 and libssl3, with no removals and no watched NVIDIA/CUDA/Docker actions.
+Notes:
+  colcon CLI is installed, but this package set does not support colcon --version. Use colcon --help or dpkg-query --show python3-colcon-core for verification.
+```
+
 ## Rules
 
 - Record the change before or immediately after running it.
