@@ -82,7 +82,7 @@ sudo apt install -s ros-humble-ros-base ros-dev-tools ros-humble-demo-nodes-cpp 
 bash scripts/summarize_apt_simulation.sh runtime/artifacts/preflight/ros2_humble_install_simulation.txt | tee runtime/artifacts/preflight/ros2_humble_install_simulation_summary.txt
 ```
 
-Stop and ask for review if the simulation proposes removing NVIDIA, CUDA, JetPack, L4T, Docker, or core OS packages.
+Stop and ask for review if the simulation proposes removing NVIDIA, CUDA, JetPack, L4T, Docker, or core OS packages. Upgrades to shared system libraries such as `libssl3` or `libsqlite3-0` are not automatic blockers, but they must be visible in the simulation summary before the real install.
 
 ## If Apt Is Locked Or Package Lists Are Stale
 

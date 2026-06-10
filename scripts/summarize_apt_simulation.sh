@@ -56,7 +56,7 @@ grep -E '^Remv ' "$simulation_file" || echo "none found"
 echo
 
 echo "## Watched Package Actions"
-watched_package_pattern='^(Inst|Remv|Conf) (nvidia|cuda|libcuda|libnvinfer|tensorrt|cudnn|vpi|docker|containerd|libnvidia|nvidia-container|nvidia-l4t|linux-image|linux-headers|linux-modules|ubuntu-|systemd|apt|dpkg|libc6|libssl|openssl)([^[:alnum:]_.+-]|$)'
+watched_package_pattern='^(Inst|Remv|Conf) (nvidia|cuda|libcuda|libnvinfer|tensorrt|cudnn|vpi|docker|containerd|libnvidia|nvidia-container|nvidia-l4t|linux-image|linux-headers|linux-modules|ubuntu-|systemd|apt|dpkg|libc6|libssl[0-9]*|libssl-dev|openssl|libsqlite3-[0-9]*|libsqlite3-dev)([^[:alnum:]_.+-]|$)'
 grep -E "$watched_package_pattern" "$simulation_file" || echo "none found"
 echo
 
