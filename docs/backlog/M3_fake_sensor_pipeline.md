@@ -25,6 +25,12 @@ The project has no real sensors. The fake sensor must still train real concepts:
 - Debug guide.
 - Interview artifacts.
 
+## Current Progress
+
+- P0-006 fake sensor publisher implementation exists at `ros2_ws/src/edge_reliability_fake_sensor`.
+- Local static verification passes with `scripts/verify_p0_006_fake_sensor_slice.ps1`.
+- Jetson runtime verification is still pending for build, launch, 100Hz topic rate, message echo, and short rosbag smoke evidence.
+
 ## Technical Constraints
 
 - Core runtime nodes use C++17 and rclcpp.

@@ -6,8 +6,7 @@ Planned P0 packages include:
 
 - `edge_reliability_msgs`: message contracts for fake sensors, metrics, system metrics, and health state.
 - `edge_reliability_tracer`: minimal C++ publisher/subscriber slice for P0-003.
-- Message and interface contracts.
-- Fake sensor pipeline.
+- `edge_reliability_fake_sensor`: 100Hz fake sensor adapter for P0-006.
 - Metrics processor.
 - Health monitor.
 - Jetson system monitor.

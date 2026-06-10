@@ -24,3 +24,5 @@ Use `verify_ros2_minimal_slice.ps1` from Windows to statically verify the P0-003
 Use `verify_p0_004_onboarding_docs.ps1` from Windows to check that the P0-004 onboarding guide and interview artifacts cover the required beginner concepts, commands, and evidence.
 
 Use `verify_p0_005_interface_contracts.ps1` from Windows to check that the P0-005 message package and interface contract cover required fields, topics, node roles, QoS, adapter boundaries, rosbag, and failure modes.
+
+Use `verify_p0_006_fake_sensor_slice.ps1` from Windows to check that the P0-006 fake sensor package covers the 100Hz default, `SensorSample` topic contract, YAML parameters, QoS defaults, launch file, README commands, and runtime-artifact hygiene.
