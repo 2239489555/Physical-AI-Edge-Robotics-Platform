@@ -1,6 +1,6 @@
 # P0-005 Edge Reliability Message And Interface Contracts
 
-Status: implementation ready, Jetson build verification pending
+Status: completed
 
 Type: AFK
 
@@ -33,9 +33,14 @@ Define the stable ROS 2 topic and message contracts for the P0 reliability lab s
 - Added local verifier: `scripts/verify_p0_005_interface_contracts.ps1`.
 - Local verifier passed: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_005_interface_contracts.ps1`.
 
-## Jetson verification pending
+## Jetson verification evidence
 
-Run `colcon build` and `ros2 interface show` on the Jetson before marking this issue fully completed.
+- Jetson `colcon build --packages-select edge_reliability_msgs --symlink-install` completed with `Summary: 1 package finished [10.1s]`.
+- `ros2 interface show edge_reliability_msgs/msg/SensorSample` showed `STATUS_OK`, `STATUS_WARN`, `STATUS_ERROR`, `std_msgs/Header header`, `sequence_id`, `sensor_id`, `value`, `status`, and `status_detail`.
+- `ros2 interface show edge_reliability_msgs/msg/PipelineMetrics` showed received, expected, dropped, out-of-order, rate, latency, p95, p99, and drop-rate fields.
+- `ros2 interface show edge_reliability_msgs/msg/SystemMetrics` showed CPU, memory, GPU, temperature, power, and source fields.
+- `ros2 interface show edge_reliability_msgs/msg/HealthState` showed `HEALTHY`, `WARNING`, `UNHEALTHY`, `state`, `reason`, and `active_rules`.
+- `git status --short --ignored` showed generated ROS build outputs and runtime artifacts ignored: `ros2_ws/build/`, `ros2_ws/install/`, `ros2_ws/log/`, and `runtime/`.
 
 ## Blocked by
 

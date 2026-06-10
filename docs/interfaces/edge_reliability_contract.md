@@ -1,6 +1,6 @@
 # Edge Reliability Interface Contract
 
-Status: P0 stable contract
+Status: P0 stable contract, Jetson verified
 
 This document defines the ROS 2 interfaces for the Edge Robotics Reliability Lab. It is the implementation boundary for fake inputs, replayed bags, and future hardware adapters.
 
@@ -222,7 +222,13 @@ Each failure should map to either `PipelineMetrics`, `SystemMetrics`, or `Health
 
 ## Verification
 
-After building on Jetson:
+Verified on Jetson:
+
+- `colcon build --packages-select edge_reliability_msgs --symlink-install` completed with `Summary: 1 package finished [10.1s]`.
+- `ros2 interface show` succeeded for `SensorSample`, `PipelineMetrics`, `SystemMetrics`, and `HealthState`.
+- Generated outputs remained ignored under `ros2_ws/build/`, `ros2_ws/install/`, `ros2_ws/log/`, and `runtime/`.
+
+Re-run commands:
 
 ```bash
 cd ~/chengwei/ros2_ws
