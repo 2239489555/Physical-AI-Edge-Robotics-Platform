@@ -1,0 +1,14 @@
+# Scripts
+
+Project-level scripts live here.
+
+P0 scripts should be company-server-friendly:
+
+- Write outputs under `runtime/`.
+- Avoid global system changes by default.
+- Refuse unsafe cleanup paths.
+- Print clear commands and paths.
+
+Use `setup_runtime_dirs.sh` to create local runtime directories on a Jetson/Linux checkout.
+
+Use `setup_runtime_dirs.ps1` for local Windows verification.

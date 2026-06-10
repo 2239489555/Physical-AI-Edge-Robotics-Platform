@@ -1,0 +1,37 @@
+# Runtime artifacts
+runtime/
+bags/
+logs/
+datasets/
+artifacts/
+
+# Large robotics outputs
+*.bag
+*.db3
+*.mcap
+*.onnx
+*.engine
+*.trt
+*.mp4
+*.avi
+*.mov
+
+# Build outputs
+ros2_ws/build/
+ros2_ws/install/
+ros2_ws/log/
+build/
+dist/
+
+# Python and tool caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
