@@ -12,3 +12,5 @@ P0 scripts should be company-server-friendly:
 Use `setup_runtime_dirs.sh` to create local runtime directories on a Jetson/Linux checkout.
 
 Use `setup_runtime_dirs.ps1` for local Windows verification.
+
+Use `collect_system_baseline.sh` on the Jetson before installing dependencies. It records read-only preflight output under `runtime/artifacts/preflight/`.

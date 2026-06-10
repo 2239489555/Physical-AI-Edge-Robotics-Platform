@@ -1,5 +1,7 @@
 # P0-002 System Baseline Collector And Change Ledger
 
+Status: ready for Jetson collection
+
 Type: AFK
 
 User stories covered: 3, 5, 11, 12, 21
@@ -14,12 +16,23 @@ Create a repeatable system inventory workflow that records the Jetson baseline a
 
 ## Acceptance criteria
 
-- [ ] A system baseline template exists for OS, kernel, architecture, L4T, JetPack, CUDA, TensorRT, cuDNN, VPI, Python, CMake, GCC, Docker, NVIDIA container runtime, nvpmodel, disk, memory, apt sources, and relevant environment variables.
-- [ ] A change ledger template exists with fields for date, command, reason, affected files or packages, verification, rollback, and risk.
-- [ ] A collector script or command list writes raw command outputs under `runtime/artifacts/preflight/`.
-- [ ] The collector avoids uploading or committing raw system output.
-- [ ] Documentation explains why Ubuntu 24.04, ROS 2 Jazzy, untracked dist-upgrade, and global pip changes are out of scope.
-- [ ] Running the collector is optional in non-Jetson environments and fails with a clear message if required commands are missing.
+- [x] A system baseline template exists for OS, kernel, architecture, L4T, JetPack, CUDA, TensorRT, cuDNN, VPI, Python, CMake, GCC, Docker, NVIDIA container runtime, nvpmodel, disk, memory, apt sources, and relevant environment variables.
+- [x] A change ledger template exists with fields for date, command, reason, affected files or packages, verification, rollback, and risk.
+- [x] A collector script or command list writes raw command outputs under `runtime/artifacts/preflight/`.
+- [x] The collector avoids uploading or committing raw system output.
+- [x] Documentation explains why Ubuntu 24.04, ROS 2 Jazzy, untracked dist-upgrade, and global pip changes are out of scope.
+- [x] Running the collector is optional in non-Jetson environments and fails with a clear message if required commands are missing.
+
+## Completion evidence
+
+- Added sanitized baseline summary template: `docs/system_baseline.md`.
+- Added global change ledger template: `docs/system_change_log.md`.
+- Added read-only Jetson collector: `scripts/collect_system_baseline.sh`.
+- Added Jetson phase 2 test guide: `docs/testing_jetson_phase2.md`.
+- Collector supports `--help` and `--dry-run`.
+- Collector writes raw outputs only under `runtime/artifacts/preflight/<timestamp>/`.
+- Collector does not install packages, modify apt sources, change shell rc files, or write system directories.
+- Jetson execution is still required before dependency installation decisions.
 
 ## Blocked by
 
