@@ -160,6 +160,8 @@ foreach ($text in @(
     "ros2 bag record /edge/sensors/fake_primary",
     "runtime/bags/p0-006",
     "fault_mode: off",
+    "from the repository root on Jetson",
+    "After the report is copied back to a Windows checkout",
     "bash scripts/run_p0_006_fake_sensor_smoke.sh",
     "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_006_smoke_report.ps1",
     "powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_006_completion_gate.ps1"
