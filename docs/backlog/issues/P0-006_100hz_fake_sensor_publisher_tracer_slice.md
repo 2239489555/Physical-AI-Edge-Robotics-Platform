@@ -30,6 +30,7 @@ Implement the first real P0 data-source tracer slice: a C++ rclcpp fake sensor p
 ## Verification commands
 
 - `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_006_fake_sensor_slice.ps1`
+- `bash scripts/run_p0_006_fake_sensor_smoke.sh`
 - `colcon build`
 - `ros2 launch <package> <launch_file>`
 - `ros2 topic echo <sensor_topic>`
@@ -41,6 +42,7 @@ Implement the first real P0 data-source tracer slice: a C++ rclcpp fake sensor p
 - Package path: `ros2_ws/src/edge_reliability_fake_sensor`.
 - Runtime topic: `/edge/sensors/fake_primary`.
 - Runtime type: `edge_reliability_msgs/msg/SensorSample`.
+- Jetson smoke script: `scripts/run_p0_006_fake_sensor_smoke.sh`.
 - Jetson evidence still needed: `colcon build`, launch logs, typed topic info, one echoed sample, 100Hz frequency evidence, and short rosbag smoke evidence.
 
 ## Runtime artifact location

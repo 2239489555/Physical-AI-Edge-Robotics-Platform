@@ -26,3 +26,5 @@ Use `verify_p0_004_onboarding_docs.ps1` from Windows to check that the P0-004 on
 Use `verify_p0_005_interface_contracts.ps1` from Windows to check that the P0-005 message package and interface contract cover required fields, topics, node roles, QoS, adapter boundaries, rosbag, and failure modes.
 
 Use `verify_p0_006_fake_sensor_slice.ps1` from Windows to check that the P0-006 fake sensor package covers the 100Hz default, `SensorSample` topic contract, YAML parameters, QoS defaults, launch file, README commands, and runtime-artifact hygiene.
+
+Use `run_p0_006_fake_sensor_smoke.sh` on Jetson to run the P0-006 build, launch, topic, frequency, and rosbag smoke check. It writes logs under `runtime/logs/`, command outputs under `runtime/results/`, and bags under `runtime/bags/p0-006/`.

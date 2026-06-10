@@ -16,6 +16,14 @@ colcon build --packages-select edge_reliability_msgs edge_reliability_fake_senso
 source install/setup.bash
 ```
 
+For the full P0-006 smoke check, run the project script from the repository root:
+
+```bash
+bash scripts/run_p0_006_fake_sensor_smoke.sh
+```
+
+It builds the package, launches the node, checks topic metadata, echoes one sample, measures frequency, records a short bag, and writes a `P0-006_RESULT` summary under `runtime/results/`.
+
 If the build output scrolls away, inspect the saved log:
 
 ```bash
@@ -51,8 +59,8 @@ sleep 2
 
 ros2 topic list -t
 ros2 topic info /edge/sensors/fake_primary -v
-ros2 topic echo --once /edge/sensors/fake_primary edge_reliability_msgs/msg/SensorSample
-timeout --signal=INT 10s ros2 topic hz /edge/sensors/fake_primary
+ros2 topic echo --once /edge/sensors/fake_primary edge_reliability_msgs/msg/SensorSample --qos-reliability best_effort
+timeout --signal=INT 10s ros2 topic hz /edge/sensors/fake_primary --qos-reliability best_effort
 ```
 
 Expected evidence:

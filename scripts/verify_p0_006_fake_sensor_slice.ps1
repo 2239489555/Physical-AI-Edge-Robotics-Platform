@@ -5,6 +5,8 @@ param(
 $ErrorActionPreference = "Stop"
 
 $packageDir = Join-Path $RepoRoot "ros2_ws/src/edge_reliability_fake_sensor"
+$smokeScriptPath = Join-Path $RepoRoot "scripts/run_p0_006_fake_sensor_smoke.sh"
+$scriptsReadmePath = Join-Path $RepoRoot "scripts/README.md"
 $requiredFiles = @(
     "package.xml",
     "CMakeLists.txt",
@@ -20,6 +22,14 @@ foreach ($relativePath in $requiredFiles) {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
         $missing += $relativePath
     }
+}
+
+if (-not (Test-Path -LiteralPath $smokeScriptPath -PathType Leaf)) {
+    $missing += "scripts/run_p0_006_fake_sensor_smoke.sh"
+}
+
+if (-not (Test-Path -LiteralPath $scriptsReadmePath -PathType Leaf)) {
+    $missing += "scripts/README.md"
 }
 
 if ($missing.Count -gt 0) {
@@ -49,6 +59,8 @@ $source = Read-PackageFile "src/fake_sensor_adapter.cpp"
 $launch = Read-PackageFile "launch/fake_sensor.launch.py"
 $config = Read-PackageFile "config/fake_sensor.yaml"
 $readme = Read-PackageFile "README.md"
+$smokeScript = Get-Content -Raw -LiteralPath $smokeScriptPath
+$scriptsReadme = Get-Content -Raw -LiteralPath $scriptsReadmePath
 
 foreach ($text in @(
     "<name>edge_reliability_fake_sensor</name>",
@@ -123,9 +135,40 @@ foreach ($text in @(
     "ros2 topic hz /edge/sensors/fake_primary",
     "ros2 bag record /edge/sensors/fake_primary",
     "runtime/bags/p0-006",
-    "fault_mode: off"
+    "fault_mode: off",
+    "bash scripts/run_p0_006_fake_sensor_smoke.sh"
 )) {
     Assert-Contains "README.md" $readme $text
+}
+
+foreach ($text in @(
+    "#!/usr/bin/env bash",
+    "P0-006_RESULT",
+    'TOPIC="/edge/sensors/fake_primary"',
+    'TYPE="edge_reliability_msgs/msg/SensorSample"',
+    "colcon build --packages-select edge_reliability_msgs edge_reliability_fake_sensor --symlink-install",
+    "ros2 launch edge_reliability_fake_sensor fake_sensor.launch.py",
+    'ros2 topic info "$TOPIC" -v',
+    'ros2 topic echo --once "$TOPIC" "$TYPE"',
+    'timeout --signal=INT 12s ros2 topic hz "$TOPIC"',
+    "--qos-reliability best_effort",
+    'ros2 bag record "$TOPIC"',
+    'ros2 bag info "$BAG_DIR"',
+    "runtime/results",
+    "runtime/logs",
+    "runtime/bags/p0-006",
+    "git status --short --ignored",
+    "PASS/FAIL:"
+)) {
+    Assert-Contains "scripts/run_p0_006_fake_sensor_smoke.sh" $smokeScript $text
+}
+
+foreach ($text in @(
+    "run_p0_006_fake_sensor_smoke.sh",
+    "P0-006",
+    "runtime/results"
+)) {
+    Assert-Contains "scripts/README.md" $scriptsReadme $text
 }
 
 Write-Host "P0-006 fake sensor static checks passed"
