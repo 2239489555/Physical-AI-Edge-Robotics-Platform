@@ -1,0 +1,160 @@
+# ROS 2 Humble Minimal Install Plan
+
+Status: planned
+
+Purpose: install only the ROS 2 Humble dependencies needed for P0-003 on the company-owned Jetson server.
+
+Official reference:
+
+- ROS 2 Humble Ubuntu deb install docs: <https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html>
+
+## Baseline Decision
+
+The Jetson baseline shows:
+
+- Ubuntu 22.04.5 LTS.
+- arm64.
+- L4T R36.4.3.
+- CUDA 12.6.
+- TensorRT 10.3.
+- ROS 2 missing or command failed.
+- colcon missing or command failed.
+
+Decision: install ROS 2 Humble minimal runtime and development tools after apt simulation passes.
+
+## Scope
+
+Install:
+
+- `ros-humble-ros-base`
+- `ros-dev-tools`
+- `ros-humble-demo-nodes-cpp`
+- `ros-humble-demo-nodes-py`
+
+Do not install:
+
+- ROS 2 Jazzy.
+- ROS desktop/full desktop packages.
+- Ubuntu 24.04 packages.
+- Isaac ROS.
+- TensorRT or CUDA changes.
+- Global Python packages through pip.
+- systemd services.
+
+Do not modify `.bashrc` in this phase. Source ROS manually in each shell.
+
+## Preflight Commands
+
+Run from the repository root on Jetson:
+
+```bash
+git pull origin main
+bash scripts/setup_runtime_dirs.sh
+git status --short --ignored
+```
+
+Check whether a ROS source already exists:
+
+```bash
+grep -R "packages.ros.org/ros2" /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null || true
+dpkg-query --show ros2-apt-source 2>/dev/null || true
+```
+
+## Add ROS 2 Apt Source If Missing
+
+If no ROS 2 apt source is present, follow the current official ROS 2 apt source package flow:
+
+```bash
+sudo apt update
+sudo apt install -y curl
+mkdir -p runtime/cache/ros2-apt-source
+export ROS_APT_SOURCE_VERSION="$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F '"tag_name"' | awk -F'"' '{print $4}')"
+curl -L -o "runtime/cache/ros2-apt-source/ros2-apt-source.deb" "https://github.com/ros-infrastructure/ros-apt-source/releases/download/${ROS_APT_SOURCE_VERSION}/ros2-apt-source_${ROS_APT_SOURCE_VERSION}.$(. /etc/os-release && echo "$VERSION_CODENAME")_all.deb"
+sudo dpkg -i runtime/cache/ros2-apt-source/ros2-apt-source.deb
+```
+
+## Simulate Install Before Changing Packages
+
+```bash
+sudo apt update
+sudo apt install -s ros-humble-ros-base ros-dev-tools ros-humble-demo-nodes-cpp ros-humble-demo-nodes-py | tee runtime/artifacts/preflight/ros2_humble_install_simulation.txt
+```
+
+Stop and ask for review if the simulation proposes removing NVIDIA, CUDA, JetPack, L4T, Docker, or core OS packages.
+
+## Install
+
+Only after simulation looks safe:
+
+```bash
+sudo apt install -y ros-humble-ros-base ros-dev-tools ros-humble-demo-nodes-cpp ros-humble-demo-nodes-py | tee runtime/artifacts/preflight/ros2_humble_install.txt
+```
+
+## Verify
+
+Open a fresh shell or source ROS manually:
+
+```bash
+source /opt/ros/humble/setup.bash
+ros2 --help
+colcon --version
+ros2 pkg list | grep '^demo_nodes_cpp$'
+```
+
+In terminal 1:
+
+```bash
+source /opt/ros/humble/setup.bash
+ros2 run demo_nodes_cpp talker
+```
+
+In terminal 2:
+
+```bash
+source /opt/ros/humble/setup.bash
+ros2 run demo_nodes_cpp listener
+```
+
+In terminal 3:
+
+```bash
+source /opt/ros/humble/setup.bash
+ros2 topic list
+ros2 topic echo /chatter --once
+ros2 topic hz /chatter
+mkdir -p runtime/bags/baseline
+ros2 bag record /chatter -o runtime/bags/baseline/chatter_smoke
+```
+
+Stop recording with `Ctrl+C`, then replay:
+
+```bash
+source /opt/ros/humble/setup.bash
+ros2 bag play runtime/bags/baseline/chatter_smoke
+```
+
+## Expected Evidence
+
+- `ros2 --help` works.
+- `colcon --version` works.
+- talker/listener communicate.
+- `/chatter` appears in `ros2 topic list`.
+- `ros2 topic echo /chatter --once` prints one message.
+- `ros2 topic hz /chatter` reports a frequency.
+- rosbag records under `runtime/bags/`.
+- `runtime/` remains ignored by git.
+
+## After Verification
+
+Paste a short sanitized result back into the thread:
+
+```text
+ROS apt source existed before install? yes/no
+Install simulation removed packages? no/yes + summary
+Installed packages command completed? yes/no
+ros2 --help works? yes/no
+colcon --version works? yes/no
+demo_nodes_cpp talker/listener works? yes/no
+rosbag record/play works? yes/no
+Any errors:
+```
