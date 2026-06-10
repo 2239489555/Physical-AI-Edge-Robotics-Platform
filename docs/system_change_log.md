@@ -76,7 +76,7 @@ Services changed:
 Environment changed:
   No shell rc change planned. Source /opt/ros/humble/setup.bash manually during verification.
 Verification:
-  Run ros2 --help, colcon --version, demo_nodes_cpp talker/listener, ros2 topic list/echo/hz, and ros2 bag record/play after install.
+  Run ros2 --help, colcon --help, dpkg-query --show python3-colcon-core, demo_nodes_cpp talker/listener, ros2 topic list/echo/hz, and ros2 bag record/play after install.
 Rollback:
   Do not rollback casually. If needed, plan explicit apt remove/purge after reviewing installed packages and impact on the company server.
 Risk:
