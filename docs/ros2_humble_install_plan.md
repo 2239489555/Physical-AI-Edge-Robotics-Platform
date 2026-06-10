@@ -7,6 +7,7 @@ Purpose: install only the ROS 2 Humble dependencies needed for P0-003 on the com
 Official reference:
 
 - ROS 2 Humble Ubuntu deb install docs: <https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html>
+- Docker Engine Ubuntu apt repository docs, used only to identify malformed Docker source syntax during apt troubleshooting: <https://docs.docker.com/engine/install/ubuntu/>
 
 ## Baseline Decision
 
@@ -109,6 +110,50 @@ If `apt install` later returns `404 Not Found` for Ubuntu packages, treat it as 
 
 ```bash
 sudo apt update
+```
+
+If `sudo apt update` fetches ROS packages but exits with Docker repository errors like these:
+
+```text
+The repository 'https://download.docker.com/linux/ubuntu $(. Release' does not have a Release file.
+The repository 'https://download.docker.com/linux/ubuntu /etc/os-release Release' does not have a Release file.
+The repository 'https://download.docker.com/linux/ubuntu "${UBUNTU_CODENAME:-$VERSION_CODENAME}") Release' does not have a Release file.
+```
+
+then the root cause is a malformed Docker apt source. A shell expression from Docker's repository setup instructions was written literally into an apt source file instead of being evaluated to `jammy`.
+
+Do not install ROS packages until `sudo apt update` exits cleanly. First inspect and record the affected source files:
+
+```bash
+mkdir -p runtime/artifacts/preflight
+sudo grep -RInE 'download\.docker\.com/linux/ubuntu|\$\(|UBUNTU_CODENAME|VERSION_CODENAME' /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null | tee runtime/artifacts/preflight/docker_apt_sources_before_fix.txt
+```
+
+If the malformed entry is a deb822 source file with `Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")`, back it up and set the suite explicitly to `jammy`:
+
+```bash
+BAD_DOCKER_SOURCE="$(sudo grep -RIlE '^Suites: .*(\$\(|UBUNTU_CODENAME|VERSION_CODENAME)' /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null | head -n 1)"
+test -n "$BAD_DOCKER_SOURCE"
+mkdir -p runtime/artifacts/preflight/apt-source-backups
+sudo cp -a "$BAD_DOCKER_SOURCE" "runtime/artifacts/preflight/apt-source-backups/$(basename "$BAD_DOCKER_SOURCE").$(date -u +%Y%m%dT%H%M%SZ)"
+sudo sed -i -E '/^Suites: .*(\$\(|UBUNTU_CODENAME|VERSION_CODENAME)/s/.*/Suites: jammy/' "$BAD_DOCKER_SOURCE"
+```
+
+If the malformed entry is an old one-line `.list` entry, comment out only the malformed Docker line:
+
+```bash
+BAD_DOCKER_SOURCE="$(sudo grep -RIlE '^deb .*download\.docker\.com/linux/ubuntu .*(\$\(|UBUNTU_CODENAME|VERSION_CODENAME)' /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null | head -n 1)"
+test -n "$BAD_DOCKER_SOURCE"
+mkdir -p runtime/artifacts/preflight/apt-source-backups
+sudo cp -a "$BAD_DOCKER_SOURCE" "runtime/artifacts/preflight/apt-source-backups/$(basename "$BAD_DOCKER_SOURCE").$(date -u +%Y%m%dT%H%M%SZ)"
+sudo sed -i -E '/^deb .*download\.docker\.com\/linux\/ubuntu .*(\$\(|UBUNTU_CODENAME|VERSION_CODENAME)/s/^/# disabled malformed docker source: /' "$BAD_DOCKER_SOURCE"
+```
+
+Then refresh apt and verify ROS package candidates:
+
+```bash
+sudo apt update | tee runtime/artifacts/preflight/apt_update_after_docker_source_fix.txt
+apt-cache policy ros-humble-ros-base ros-dev-tools ros-humble-demo-nodes-cpp ros-humble-demo-nodes-py | tee runtime/artifacts/preflight/ros2_policy_after_apt_fix.txt
 ```
 
 If `ros-humble-*` packages are still not found after installing `ros2-apt-source`, it usually means apt has not refreshed the newly added ROS source yet. Run:

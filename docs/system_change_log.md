@@ -25,6 +25,36 @@ Notes:
 
 ## Entries
 
+### 2026-06-10 - Planned malformed Docker apt source repair
+
+```text
+Date: 2026-06-10
+Operator: User on Jetson
+Task: Repair apt source metadata so ROS 2 Humble dependency installation can proceed
+Command:
+  See the Docker apt source troubleshooting branch in docs/ros2_humble_install_plan.md.
+Reason:
+  sudo apt update now fetches Ubuntu, NVIDIA, and ROS package lists, but exits non-zero because a Docker apt source contains a literal shell expression such as $(. /etc/os-release && echo ...). Apt treats those tokens as invalid Docker suites and disables those repository paths.
+Files changed:
+  Planned: one affected file under /etc/apt/sources.list or /etc/apt/sources.list.d, after backup to runtime/artifacts/preflight/apt-source-backups.
+Packages installed:
+  None.
+Packages removed:
+  None.
+Services changed:
+  None.
+Environment changed:
+  None.
+Verification:
+  sudo apt update exits cleanly, and apt-cache policy shows candidates for ros-humble-ros-base, ros-dev-tools, ros-humble-demo-nodes-cpp, and ros-humble-demo-nodes-py.
+Rollback:
+  Restore the backed-up apt source file from runtime/artifacts/preflight/apt-source-backups if the Docker repository no longer appears in apt-cache policy.
+Risk:
+  Narrow. The repair touches apt source metadata only and targets a malformed Docker repository entry; it does not install, remove, or upgrade packages.
+Notes:
+  Do not remove apt lock files. Do not run ROS install until apt update is clean and the install simulation has been reviewed.
+```
+
 ### 2026-06-10 - Planned ROS 2 Humble minimal install
 
 ```text
