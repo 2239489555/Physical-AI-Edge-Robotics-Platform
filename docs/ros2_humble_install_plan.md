@@ -79,6 +79,7 @@ sudo dpkg -i runtime/cache/ros2-apt-source/ros2-apt-source.deb
 ```bash
 sudo apt update
 sudo apt install -s ros-humble-ros-base ros-dev-tools ros-humble-demo-nodes-cpp ros-humble-demo-nodes-py | tee runtime/artifacts/preflight/ros2_humble_install_simulation.txt
+bash scripts/summarize_apt_simulation.sh runtime/artifacts/preflight/ros2_humble_install_simulation.txt | tee runtime/artifacts/preflight/ros2_humble_install_simulation_summary.txt
 ```
 
 Stop and ask for review if the simulation proposes removing NVIDIA, CUDA, JetPack, L4T, Docker, or core OS packages.

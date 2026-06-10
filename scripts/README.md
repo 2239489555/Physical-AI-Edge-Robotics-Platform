@@ -16,3 +16,5 @@ Use `setup_runtime_dirs.ps1` for local Windows verification.
 Use `collect_system_baseline.sh` on the Jetson before installing dependencies. It records read-only preflight output under `runtime/artifacts/preflight/`.
 
 Use `summarize_system_baseline.sh` after collection to generate a sanitized summary that can be shared for dependency planning.
+
+Use `summarize_apt_simulation.sh` after an `apt install -s ... | tee ...` dry run to extract removals, upgrades, watched package actions, and the final apt count before approving a host install.
