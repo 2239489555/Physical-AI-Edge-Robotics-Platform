@@ -14,3 +14,5 @@ Use `setup_runtime_dirs.sh` to create local runtime directories on a Jetson/Linu
 Use `setup_runtime_dirs.ps1` for local Windows verification.
 
 Use `collect_system_baseline.sh` on the Jetson before installing dependencies. It records read-only preflight output under `runtime/artifacts/preflight/`.
+
+Use `summarize_system_baseline.sh` after collection to generate a sanitized summary that can be shared for dependency planning.

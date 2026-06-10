@@ -23,6 +23,7 @@ git pull origin main
 bash scripts/setup_runtime_dirs.sh
 bash scripts/collect_system_baseline.sh --dry-run
 bash scripts/collect_system_baseline.sh
+bash scripts/summarize_system_baseline.sh
 find runtime/artifacts/preflight -maxdepth 2 -type f | sort
 git status --short --ignored
 ```
@@ -31,6 +32,7 @@ git status --short --ignored
 
 - Dry-run prints commands and does not write system files.
 - Real run writes raw outputs under `runtime/artifacts/preflight/<timestamp>/`.
+- Summary script writes `SUMMARY.sanitized.md` under the newest preflight directory.
 - `runtime/artifacts/preflight/` is ignored by git.
 - `docs/system_baseline.md` exists as the sanitized summary template.
 - `docs/system_change_log.md` exists as the global-change ledger.
@@ -40,7 +42,7 @@ git status --short --ignored
 
 Do not paste raw logs if they contain company-sensitive details.
 
-Send a short summary instead:
+Send the contents of `SUMMARY.sanitized.md`, or this short summary:
 
 ```text
 OS:

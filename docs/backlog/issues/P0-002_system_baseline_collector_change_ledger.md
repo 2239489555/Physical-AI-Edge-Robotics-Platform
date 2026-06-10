@@ -28,9 +28,11 @@ Create a repeatable system inventory workflow that records the Jetson baseline a
 - Added sanitized baseline summary template: `docs/system_baseline.md`.
 - Added global change ledger template: `docs/system_change_log.md`.
 - Added read-only Jetson collector: `scripts/collect_system_baseline.sh`.
+- Added sanitized summary helper: `scripts/summarize_system_baseline.sh`.
 - Added Jetson phase 2 test guide: `docs/testing_jetson_phase2.md`.
 - Collector supports `--help` and `--dry-run`.
 - Collector writes raw outputs only under `runtime/artifacts/preflight/<timestamp>/`.
+- Summary helper writes `SUMMARY.sanitized.md` under the selected preflight directory.
 - Collector does not install packages, modify apt sources, change shell rc files, or write system directories.
 - Jetson execution is still required before dependency installation decisions.
 
