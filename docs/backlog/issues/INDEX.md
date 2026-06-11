@@ -21,7 +21,7 @@
 | P0-006 | 100Hz fake sensor publisher 垂直切片（已完成） | AFK | P0-005 |
 | P0-007 | Processor metrics subscriber 垂直切片（已完成） | AFK | P0-006 |
 | P0-008 | rosbag 录制与回放工作流（已完成） | AFK | P0-007 |
-| P0-009 | 丢帧与 subscriber delay 故障注入 | AFK | P0-007 |
+| P0-009 | 丢帧与 subscriber delay 故障注入（已完成） | AFK | P0-007 |
 | P0-010 | 可配置阈值的 health monitor | AFK | P0-009 |
 | P0-011 | tegrastats 解析器与 ROS 2 system metrics node | AFK | P0-002, P0-003 |
 | P0-012 | Jetson 指标接入 system health | AFK | P0-010, P0-011 |
