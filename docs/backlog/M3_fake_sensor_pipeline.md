@@ -34,7 +34,7 @@ The project has no real sensors. The fake sensor must still train real concepts:
 - P0-007 processor metrics subscriber is completed and Jetson verified on 2026-06-11.
 - `ros2_ws/src/edge_reliability_processor` publishes `/edge/metrics/pipeline` as `edge_reliability_msgs/msg/PipelineMetrics` from `sensor_processor`.
 - Jetson smoke evidence passed with `SMOKE_EXIT_STATUS=0`, 3 accumulator tests passing, sensor rate at 100.003Hz, metrics rate at 1.000Hz, zero observed drops/out-of-order samples, and a short rosbag containing 772 messages across sensor and metrics topics.
-- Follow-up script hardening changed P0-007 launch cleanup to bounded INT/TERM/KILL shutdown after a manual run reported cleanup could hang.
+- Follow-up script hardening changed P0-007 launch cleanup to bounded INT/TERM/KILL shutdown after a manual run reported cleanup could hang; the hardened script was rechecked under `timeout 120s`, finished in about 50 seconds, and left no fake sensor or processor residual processes.
 
 ## Technical Constraints
 

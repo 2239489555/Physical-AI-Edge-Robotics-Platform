@@ -73,6 +73,7 @@ Verified on Jetson on 2026-06-11 with `SMOKE_EXIT_STATUS=0`.
 - Rosbag: `runtime/bags/p0-007/processor_smoke_20260611T015104Z` recorded 772 messages: 764 sensor messages and 8 pipeline metrics messages.
 - Runtime hygiene: only ignored `ros2_ws/build/`, `ros2_ws/install/`, `ros2_ws/log/`, and `runtime/` outputs were produced.
 - Follow-up hardening: the smoke script cleanup was changed to bounded INT/TERM/KILL shutdown after a manual run reported launch cleanup could hang.
+- Cleanup recheck: after pulling the hardened script, `timeout 120s bash scripts/run_p0_007_processor_smoke.sh` finished normally in about 50 seconds with `SMOKE_EXIT_STATUS=0`, clean launch shutdown logs, no `fake_sensor_adapter` or `sensor_processor` residual processes, and a fresh rosbag at `runtime/bags/p0-007/processor_smoke_20260611T020959Z` with 772 messages.
 
 ## Runtime artifact location
 
