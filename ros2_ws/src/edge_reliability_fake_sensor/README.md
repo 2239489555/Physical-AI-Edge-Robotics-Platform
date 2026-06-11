@@ -53,7 +53,7 @@ Override the config file without rebuilding:
 ros2 launch edge_reliability_fake_sensor fake_sensor.launch.py config_file:=$(pwd)/src/edge_reliability_fake_sensor/config/fake_sensor.yaml
 ```
 
-The default config publishes at 100Hz with `fault_mode: off`.
+The default config publishes at 100Hz with `fault_mode: "off"`.
 
 ## Topic Checks
 

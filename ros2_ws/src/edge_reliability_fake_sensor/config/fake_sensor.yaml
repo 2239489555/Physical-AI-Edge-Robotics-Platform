@@ -4,7 +4,7 @@ fake_sensor_adapter:
     sensor_id: fake_primary
     frame_id: fake_sensor_frame
     publish_hz: 100.0
-    status_mode: ok
-    fault_mode: off
+    status_mode: "ok"
+    fault_mode: "off"
     qos_depth: 10
     qos_reliability: best_effort

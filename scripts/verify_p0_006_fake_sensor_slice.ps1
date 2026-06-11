@@ -143,8 +143,8 @@ foreach ($text in @(
     "sensor_id: fake_primary",
     "frame_id: fake_sensor_frame",
     "topic: /edge/sensors/fake_primary",
-    "status_mode: ok",
-    "fault_mode: off",
+    'status_mode: "ok"',
+    'fault_mode: "off"',
     "qos_depth: 10",
     "qos_reliability: best_effort"
 )) {
@@ -159,7 +159,7 @@ foreach ($text in @(
     "ros2 topic hz /edge/sensors/fake_primary",
     "ros2 bag record /edge/sensors/fake_primary",
     "runtime/bags/p0-006",
-    "fault_mode: off",
+    'fault_mode: "off"',
     "from the repository root on Jetson",
     "After the report is copied back to a Windows checkout",
     "bash scripts/run_p0_006_fake_sensor_smoke.sh",
