@@ -27,9 +27,11 @@ The project has no real sensors. The fake sensor must still train real concepts:
 
 ## Current Progress
 
-- P0-006 fake sensor publisher implementation exists at `ros2_ws/src/edge_reliability_fake_sensor`.
-- Local static verification passes with `scripts/verify_p0_006_fake_sensor_slice.ps1`.
-- Jetson runtime verification is still pending for build, launch, 100Hz topic rate, message echo, and short rosbag smoke evidence.
+- P0-006 fake sensor publisher is completed and Jetson verified on 2026-06-11.
+- `ros2_ws/src/edge_reliability_fake_sensor` publishes `/edge/sensors/fake_primary` as `edge_reliability_msgs/msg/SensorSample`.
+- Jetson smoke evidence passed with `SMOKE_EXIT_STATUS=0`, 99.998Hz measured rate, one valid echoed sample, and a short rosbag containing 765 messages.
+- Local completion verification passes with `scripts/verify_p0_006_completion_gate.ps1` against the returned Jetson smoke report.
+- Remaining M3 work starts at P0-007 for processor metrics, receive rate, sequence continuity, latency, and drop detection.
 
 ## Technical Constraints
 

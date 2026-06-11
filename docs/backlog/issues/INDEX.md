@@ -18,7 +18,7 @@
 | P0-003 | ROS 2 workspace 初始化与最小 C++ 闭环（已完成） | AFK | P0-001 |
 | P0-004 | 机器人零基础上手指南与命令证据（文档完成，待复述） | HITL | P0-003 |
 | P0-005 | Edge reliability 消息定义与接口契约（已完成） | AFK | P0-003 |
-| P0-006 | 100Hz fake sensor publisher 垂直切片（实现完成，待 Jetson 验证） | AFK | P0-005 |
+| P0-006 | 100Hz fake sensor publisher 垂直切片（已完成） | AFK | P0-005 |
 | P0-007 | Processor metrics subscriber 垂直切片 | AFK | P0-006 |
 | P0-008 | rosbag 录制与回放工作流 | AFK | P0-007 |
 | P0-009 | 丢帧与 subscriber delay 故障注入 | AFK | P0-007 |

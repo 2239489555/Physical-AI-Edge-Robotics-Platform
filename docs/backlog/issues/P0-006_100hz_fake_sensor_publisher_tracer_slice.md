@@ -2,7 +2,7 @@
 
 Type: AFK
 
-Status: implementation ready, Jetson verification pending
+Status: completed, Jetson verified on 2026-06-11
 
 User stories covered: 4, 6, 8, 9, 16, 24
 
@@ -16,12 +16,12 @@ Implement the first real P0 data-source tracer slice: a C++ rclcpp fake sensor p
 
 ## Acceptance criteria
 
-- [ ] Fake sensor node publishes at 100Hz by default.
-- [ ] Message includes timestamp, sequence ID, sensor ID, value, and status or equivalent contract fields.
-- [ ] Frequency, sensor ID, topic name, QoS profile, and fault-off defaults are YAML-configurable.
-- [ ] Launch file starts the node with config.
-- [ ] README shows how to inspect frequency and message contents.
-- [ ] Node writes structured logs useful for debugging startup and parameter loading.
+- [x] Fake sensor node publishes at 100Hz by default.
+- [x] Message includes timestamp, sequence ID, sensor ID, value, and status or equivalent contract fields.
+- [x] Frequency, sensor ID, topic name, QoS profile, and fault-off defaults are YAML-configurable.
+- [x] Launch file starts the node with config.
+- [x] README shows how to inspect frequency and message contents.
+- [x] Node writes structured logs useful for debugging startup and parameter loading.
 
 ## Blocked by
 
@@ -47,7 +47,19 @@ Implement the first real P0 data-source tracer slice: a C++ rclcpp fake sensor p
 - Jetson smoke script: `scripts/run_p0_006_fake_sensor_smoke.sh`.
 - Returned-report verifier: `scripts/verify_p0_006_smoke_report.ps1`.
 - Completion gate: `scripts/verify_p0_006_completion_gate.ps1`.
-- Jetson evidence still needed: `colcon build`, launch logs, typed topic info, one echoed sample, 100Hz frequency evidence, and short rosbag smoke evidence.
+
+## Jetson verification evidence
+
+Verified on Jetson on 2026-06-11 with `SMOKE_EXIT_STATUS=0`.
+
+- Build: `colcon build --packages-select edge_reliability_msgs edge_reliability_fake_sensor --symlink-install` completed with `Summary: 2 packages finished [1.36s]`.
+- Launch: `ros2 launch edge_reliability_fake_sensor fake_sensor.launch.py` started `fake_sensor_adapter` and logged `event=startup` plus `event=first_publish`.
+- Topic: `/edge/sensors/fake_primary` published `edge_reliability_msgs/msg/SensorSample` with publisher node `fake_sensor_adapter` and BEST_EFFORT QoS.
+- Echo: sample included `header.stamp`, `frame_id: fake_sensor_frame`, `sequence_id: 604`, `sensor_id: fake_primary`, `value: 0.604`, `status: 0`, and `status_detail: ok`.
+- Rate: best-effort probe measured `average rate: 99.998` over 1001 samples in a 10.000s window.
+- Rosbag: `runtime/bags/p0-006/fake_sensor_smoke_20260611T002906Z` recorded 765 messages on `/edge/sensors/fake_primary`.
+- Runtime hygiene: only ignored `ros2_ws/build/`, `ros2_ws/install/`, `ros2_ws/log/`, and `runtime/` outputs were produced.
+- Local returned-report gate: `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_006_completion_gate.ps1` passed against the returned Jetson smoke report.
 
 ## Runtime artifact location
 
