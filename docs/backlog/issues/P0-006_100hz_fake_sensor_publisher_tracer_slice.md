@@ -36,7 +36,7 @@ Implement the first real P0 data-source tracer slice: a C++ rclcpp fake sensor p
 - `colcon build`
 - `ros2 launch <package> <launch_file>`
 - `ros2 topic echo <sensor_topic>`
-- `ros2 topic hz <sensor_topic>`
+- best-effort frequency probe inside `scripts/run_p0_006_fake_sensor_smoke.sh`
 
 ## Implementation evidence
 

@@ -73,6 +73,18 @@ function Assert-Contains {
     }
 }
 
+function Assert-NotContains {
+    param(
+        [string]$Name,
+        [string]$Content,
+        [string]$Text
+    )
+
+    if ($Content.Contains($Text)) {
+        throw "$Name contains forbidden text: $Text"
+    }
+}
+
 $packageXml = Read-PackageFile "package.xml"
 $cmake = Read-PackageFile "CMakeLists.txt"
 $source = Read-PackageFile "src/fake_sensor_adapter.cpp"
@@ -156,7 +168,7 @@ foreach ($text in @(
     "ros2 launch edge_reliability_fake_sensor fake_sensor.launch.py",
     "ros2 topic info /edge/sensors/fake_primary -v",
     "ros2 topic echo --once /edge/sensors/fake_primary edge_reliability_msgs/msg/SensorSample",
-    "ros2 topic hz /edge/sensors/fake_primary",
+    "bash scripts/run_p0_006_fake_sensor_smoke.sh",
     "ros2 bag record /edge/sensors/fake_primary",
     "runtime/bags/p0-006",
     'fault_mode: "off"',
@@ -178,8 +190,11 @@ foreach ($text in @(
     "ros2 launch edge_reliability_fake_sensor fake_sensor.launch.py",
     'ros2 topic info "$TOPIC" -v',
     'ros2 topic echo --once "$TOPIC" "$TYPE"',
-    'timeout --signal=INT 12s ros2 topic hz "$TOPIC"',
     "--qos-reliability best_effort",
+    "measure_topic_hz_with_best_effort",
+    "QoSReliabilityPolicy.BEST_EFFORT",
+    "edge_reliability_msgs.msg",
+    'measure_topic_hz_with_best_effort "$TOPIC" "$TOPIC_HZ"',
     'grep -F "Type: $TYPE" "$TOPIC_INFO"',
     'grep -F "Node name: fake_sensor_adapter" "$TOPIC_INFO"',
     'grep -F "header:" "$TOPIC_ECHO"',
@@ -206,6 +221,9 @@ foreach ($text in @(
 )) {
     Assert-Contains "scripts/run_p0_006_fake_sensor_smoke.sh" $smokeScript $text
 }
+
+Assert-NotContains "scripts/run_p0_006_fake_sensor_smoke.sh" $smokeScript 'ros2 topic hz "$TOPIC" --qos-reliability best_effort'
+Assert-NotContains "README.md" $readme "ros2 topic hz /edge/sensors/fake_primary --qos-reliability best_effort"
 
 foreach ($text in @(
     "param(",

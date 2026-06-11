@@ -100,6 +100,77 @@ source_setup_with_nounset_disabled() {
   fi
 }
 
+measure_topic_hz_with_best_effort() {
+  local topic="$1"
+  local output_file="$2"
+  local sample_seconds="${3:-10.0}"
+
+  python3 - "$topic" "$sample_seconds" <<'PY' | tee "$output_file"
+import sys
+import time
+
+import rclpy
+from edge_reliability_msgs.msg import SensorSample
+from rclpy.node import Node
+from rclpy.qos import (
+    QoSDurabilityPolicy,
+    QoSHistoryPolicy,
+    QoSProfile,
+    QoSReliabilityPolicy,
+)
+
+
+topic = sys.argv[1]
+sample_seconds = float(sys.argv[2])
+received_count = 0
+first_time = None
+last_time = None
+
+
+class HzProbe(Node):
+    def __init__(self):
+        super().__init__("p0_006_fake_sensor_hz_probe")
+        qos = QoSProfile(
+            history=QoSHistoryPolicy.KEEP_LAST,
+            depth=10,
+            reliability=QoSReliabilityPolicy.BEST_EFFORT,
+            durability=QoSDurabilityPolicy.VOLATILE,
+        )
+        self.create_subscription(SensorSample, topic, self.on_sample, qos)
+
+    def on_sample(self, _message):
+        global received_count, first_time, last_time
+        now = time.monotonic()
+        if first_time is None:
+            first_time = now
+        last_time = now
+        received_count += 1
+
+
+rclpy.init()
+node = HzProbe()
+deadline = time.monotonic() + sample_seconds
+
+try:
+    while time.monotonic() < deadline:
+        rclpy.spin_once(node, timeout_sec=0.1)
+finally:
+    node.destroy_node()
+    rclpy.shutdown()
+
+if received_count < 2 or first_time is None or last_time is None or last_time <= first_time:
+    print("average rate: unavailable")
+    print(f"received samples: {received_count}")
+    sys.exit(2)
+
+window_seconds = last_time - first_time
+average_rate = (received_count - 1) / window_seconds
+print(f"average rate: {average_rate:.3f}")
+print(f"received samples: {received_count}")
+print(f"measurement window: {window_seconds:.3f}s")
+PY
+}
+
 write_report() {
   mkdir -p "$RESULT_DIR"
   {
@@ -259,10 +330,14 @@ if ! grep -F "event=first_publish" "$LAUNCH_LOG" >/dev/null 2>&1; then
   fail "launch log is missing structured first_publish event"
 fi
 
-timeout --signal=INT 12s ros2 topic hz "$TOPIC" --qos-reliability best_effort | tee "$TOPIC_HZ"
+measure_topic_hz_with_best_effort "$TOPIC" "$TOPIC_HZ" 10.0
+if [[ "$?" -ne 0 ]]; then
+  fail "best-effort topic hz probe did not report an average rate"
+fi
+
 LAST_RATE="$(awk '/average rate:/ {rate=$3} END {print rate}' "$TOPIC_HZ")"
 if [[ -z "$LAST_RATE" ]]; then
-  fail "ros2 topic hz did not report an average rate"
+  fail "best-effort topic hz probe did not report an average rate"
 fi
 
 awk -v rate="$LAST_RATE" 'BEGIN { exit !(rate >= 90.0 && rate <= 110.0) }'

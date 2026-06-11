@@ -70,14 +70,13 @@ sleep 2
 ros2 topic list -t
 ros2 topic info /edge/sensors/fake_primary -v
 ros2 topic echo --once /edge/sensors/fake_primary edge_reliability_msgs/msg/SensorSample --qos-reliability best_effort
-timeout --signal=INT 10s ros2 topic hz /edge/sensors/fake_primary --qos-reliability best_effort
 ```
 
 Expected evidence:
 
 - Topic type is `edge_reliability_msgs/msg/SensorSample`.
 - Publisher node is `fake_sensor_adapter`.
-- `ros2 topic hz` reports approximately 100Hz.
+- The full smoke script writes approximately 100Hz evidence to `runtime/results/p0_006_topic_hz.txt`.
 - Echoed samples include `header.stamp`, `sequence_id`, `sensor_id`, `value`, `status`, and `status_detail`.
 
 ## Rosbag Smoke
