@@ -1,0 +1,39 @@
+P0-008_RESULT
+
+Build
+colcon exit status: 0
+
+Unit Tests
+colcon test exit status: 0
+
+Record
+scenario: normal_replay
+recorded topic: /edge/sensors/fake_primary
+recorded type: edge_reliability_msgs/msg/SensorSample
+bag directory: /home/jetson/chengwei/runtime/bags/p0-008/normal_replay_20260611T030000Z
+recorded sensor messages: 760
+
+Replay
+replay metrics summary:
+metrics_messages: 8
+last_received_count: 758
+last_expected_count: 758
+last_dropped_count: 0
+last_out_of_order_count: 0
+last_receive_rate_hz: 99.900
+last_drop_rate: 0.000000
+
+Metrics Comparison
+recorded sensor messages: 760
+replay metrics messages: 8
+replay received count: 758
+replay expected count: 758
+replay receive ratio: 0.997
+replay receive rate hz: 99.900
+replay drop rate: 0.0
+replay out_of_order count: 0
+runtime/bags/p0-008
+
+Verdict
+PASS/FAIL: PASS
+Blocker if FAIL: -

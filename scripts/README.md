@@ -40,3 +40,11 @@ Use `run_p0_007_processor_smoke.sh` on Jetson to run the P0-007 build, unit test
 Use `verify_p0_007_smoke_report.ps1` from Windows to check a returned P0-007 `runtime/results/p0_007_smoke_report.txt` before marking the issue complete.
 
 Use `verify_p0_007_completion_gate.ps1` from Windows after a returned P0-007 report exists to run both the static implementation gate and the returned-report gate.
+
+Use `verify_p0_008_rosbag_workflow.ps1` from Windows to check that the P0-008 rosbag record/replay workflow covers project-local bag paths, scenario/timestamp naming, raw sensor recording, replay into `sensor_processor`, metrics comparison, report verification, and documentation.
+
+Use `run_p0_008_rosbag_replay_smoke.sh` on Jetson to record a normal raw sensor bag under `runtime/bags/p0-008/`, stop the live fake sensor, replay the bag into `sensor_processor`, and compare replay metrics. It writes logs under `runtime/logs/` and command outputs under `runtime/results/`.
+
+Use `verify_p0_008_smoke_report.ps1` from Windows to check a returned P0-008 `runtime/results/p0_008_smoke_report.txt` before marking the issue complete.
+
+Use `verify_p0_008_completion_gate.ps1` from Windows after a returned P0-008 report exists to run both the static workflow gate and the returned-report gate.

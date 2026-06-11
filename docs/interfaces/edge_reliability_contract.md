@@ -206,6 +206,14 @@ runtime/bags/
 
 Bags should not be committed to git.
 
+P0-008 normal replay:
+
+- record raw sensor bags under `runtime/bags/p0-008`;
+- use scenario/timestamp naming such as `normal_replay_YYYYMMDDTHHMMSSZ`;
+- record `/edge/sensors/fake_primary` only when the goal is replaying into `sensor_processor`;
+- do not replay `/edge/metrics/pipeline` while `sensor_processor` is publishing fresh metrics, because that creates ambiguous metrics evidence.
+- Rule: do not replay /edge/metrics/pipeline while `sensor_processor` is publishing.
+
 ## Failure Modes
 
 The P0 pipeline should make these failure modes visible:

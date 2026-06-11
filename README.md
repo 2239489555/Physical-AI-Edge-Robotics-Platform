@@ -18,3 +18,4 @@ Start with the agent-readable PRD:
 - [P0-003 minimal ROS 2 tracer package](ros2_ws/src/edge_reliability_tracer/README.md)
 - [P0-006 fake sensor package](ros2_ws/src/edge_reliability_fake_sensor/README.md)
 - [P0-007 processor metrics package](ros2_ws/src/edge_reliability_processor/README.md)
+- [P0-008 rosbag record/replay workflow](docs/runbooks/rosbag_record_replay_workflow.md)
