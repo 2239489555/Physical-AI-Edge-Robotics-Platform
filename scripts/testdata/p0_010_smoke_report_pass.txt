@@ -1,0 +1,34 @@
+P0-010_RESULT
+
+Build
+colcon exit status: 0
+
+Unit Tests
+colcon test exit status: 0
+
+Normal Health
+normal state: HEALTHY
+normal reason: healthy: pipeline metrics within thresholds
+normal active rules:
+
+Drop Fault Health
+drop fault state: UNHEALTHY
+drop fault reason: unhealthy: drop_rate_unhealthy
+drop fault active rules: drop_rate_unhealthy
+
+Delay Fault Health
+delay fault state: WARNING
+delay fault reason: warning: p95_latency_warning
+delay fault active rules: p95_latency_warning
+
+Comparison
+health topic: /edge/health/state
+health type: edge_reliability_msgs/msg/HealthState
+metrics topic: /edge/metrics/pipeline
+normal state: HEALTHY
+drop fault state: UNHEALTHY
+delay fault state: WARNING
+
+Verdict
+PASS/FAIL: PASS
+Blocker if FAIL: -

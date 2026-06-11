@@ -56,3 +56,11 @@ Use `run_p0_009_fault_injection_smoke.sh` on Jetson to run normal, drop-fault, a
 Use `verify_p0_009_smoke_report.ps1` from Windows to check a returned P0-009 `runtime/results/p0_009_smoke_report.txt` before marking the issue complete.
 
 Use `verify_p0_009_completion_gate.ps1` from Windows after a returned P0-009 report exists to run both the static fault-injection gate and the returned-report gate.
+
+Use `verify_p0_010_health_monitor.ps1` from Windows to check that the P0-010 health monitor package covers isolated health rules, YAML-configurable thresholds, `PipelineMetrics` subscription, `HealthState` publication, launch/config files, smoke workflow, and documentation.
+
+Use `run_p0_010_health_monitor_smoke.sh` on Jetson to run normal, drop-fault, and subscriber-delay scenarios through `health_monitor`. It writes logs under `runtime/logs/` and command outputs under `runtime/results/`.
+
+Use `verify_p0_010_smoke_report.ps1` from Windows to check a returned P0-010 `runtime/results/p0_010_smoke_report.txt` before marking the issue complete.
+
+Use `verify_p0_010_completion_gate.ps1` from Windows after a returned P0-010 report exists to run both the static health-monitor gate and the returned-report gate.

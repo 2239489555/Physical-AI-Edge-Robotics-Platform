@@ -41,6 +41,7 @@ The project has no real sensors. The fake sensor must still train real concepts:
 - P0-009 fault injection workflow is completed and Jetson verified on 2026-06-11.
 - Drop fault evidence showed deterministic random drops through `fake_sensor_drop.yaml`: 1212 received of 1500 expected, 288 dropped, `drop_rate: 0.192000`, and a drop fault bag containing 784 messages.
 - Subscriber delay evidence showed processing delay through `processor_delay.yaml`: p95 latency increased from 0.580ms to 8.436ms, p99 latency reached 8.624ms, and a delay fault bag containing 938 messages.
+- P0-010 health monitor implementation is prepared for Jetson verification. It adds `edge_reliability_health`, maps pipeline metrics to `/edge/health/state`, and uses P0-009 evidence so normal stays healthy, drop fault becomes unhealthy, and subscriber delay becomes warning.
 
 ## Technical Constraints
 

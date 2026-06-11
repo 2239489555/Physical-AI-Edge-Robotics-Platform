@@ -1,0 +1,22 @@
+P0-010_RESULT
+
+Build
+colcon exit status: 0
+
+Unit Tests
+colcon test exit status: 0
+
+Normal Health
+normal state: HEALTHY
+
+Drop Fault Health
+drop fault state: HEALTHY
+drop fault active rules:
+
+Delay Fault Health
+delay fault state: HEALTHY
+delay fault active rules:
+
+Verdict
+PASS/FAIL: FAIL
+Blocker if FAIL: faults stayed healthy

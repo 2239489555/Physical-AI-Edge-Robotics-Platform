@@ -155,8 +155,16 @@ Recommended P0 parameters:
 | `sensor_processor` | `latency_window_size` | `1000` | Rolling latency sample window |
 | `sensor_processor` | `processing_delay_enabled` | `false` | P0-009 subscriber delay injection switch |
 | `sensor_processor` | `processing_delay_ms` | `0.0` | P0-009 per-sample delay used to increase `p95_latency_ms` and `p99_latency_ms` |
+| `health_monitor` | `metrics_topic` | `/edge/metrics/pipeline` | P0-010 input `PipelineMetrics` topic |
+| `health_monitor` | `health_topic` | `/edge/health/state` | P0-010 output `HealthState` topic |
+| `health_monitor` | `min_receive_rate_hz_warning` | `95.0` | Warning floor for receive rate |
+| `health_monitor` | `min_receive_rate_hz_unhealthy` | `80.0` | Unhealthy floor for receive rate |
 | `health_monitor` | `max_drop_rate_warning` | `0.001` | Warning drop-rate threshold |
 | `health_monitor` | `max_drop_rate_unhealthy` | `0.01` | Unhealthy drop-rate threshold |
+| `health_monitor` | `max_p95_latency_ms_warning` | `5.0` | Warning p95 latency threshold for P0-010 |
+| `health_monitor` | `max_p95_latency_ms_unhealthy` | `20.0` | Unhealthy p95 latency threshold for P0-010 |
+| `health_monitor` | `max_p99_latency_ms_warning` | `10.0` | Warning p99 latency threshold for P0-010 |
+| `health_monitor` | `max_p99_latency_ms_unhealthy` | `50.0` | Unhealthy p99 latency threshold for P0-010 |
 
 ## Logs
 
@@ -181,6 +189,14 @@ Initial P0 health rules:
 - `UNHEALTHY`: sustained high drop rate, p99 latency above unhealthy threshold, no sensor messages for a configured timeout, or system metrics over hard limits.
 
 Health output must use `edge_reliability_msgs/msg/HealthState`.
+
+P0-010 `edge_reliability_health` rule mapping:
+
+- normal 100Hz metrics should publish `HEALTHY`;
+- drop-fault metrics should publish `UNHEALTHY` with `drop_rate_unhealthy`;
+- subscriber-delay metrics should publish `WARNING` or `UNHEALTHY` with a p95 latency rule;
+- `HealthState.reason` must summarize the highest active severity;
+- `HealthState.active_rules` must include machine-readable rule names.
 
 ## QoS
 

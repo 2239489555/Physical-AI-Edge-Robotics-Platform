@@ -1,0 +1,15 @@
+health_monitor:
+  ros__parameters:
+    metrics_topic: /edge/metrics/pipeline
+    health_topic: /edge/health/state
+    frame_id: health_frame
+    qos_depth: 10
+    min_receive_rate_hz_warning: 95.0
+    min_receive_rate_hz_unhealthy: 80.0
+    max_drop_rate_warning: 0.001
+    max_drop_rate_unhealthy: 0.01
+    max_p95_latency_ms_warning: 5.0
+    max_p95_latency_ms_unhealthy: 20.0
+    max_p99_latency_ms_warning: 10.0
+    max_p99_latency_ms_unhealthy: 50.0
+    min_expected_count: 10
