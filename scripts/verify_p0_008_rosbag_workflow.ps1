@@ -160,7 +160,10 @@ foreach ($text in @(
     "ros2 bag play",
     "received_count",
     "90%",
-    "fault cases"
+    "fault cases",
+    "Replay latency caveat",
+    "original wall-clock timestamp",
+    "compare count, rate, drop, and order metrics"
 )) {
     Assert-Contains "docs/runbooks/rosbag_record_replay_workflow.md" $workflowDoc $text
 }

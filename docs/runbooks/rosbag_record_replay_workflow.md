@@ -57,6 +57,8 @@ For the P0-008 smoke check:
 
 The 90% tolerance exists because short ROS graph startup windows and best-effort sensor QoS can lose edge samples without invalidating the replay concept. Larger divergence should be investigated before moving to fault cases.
 
+Replay latency caveat: `SensorSample.header.stamp` is recorded with the original wall-clock timestamp. When the bag is replayed later, the processor's live clock compares against that old timestamp, so `average_latency_ms`, `p95_latency_ms`, and `p99_latency_ms` can be very large. For P0-008, compare count, rate, drop, and order metrics. Treat replay latency as a timestamp semantics artifact unless a later task adds simulated time or timestamp rewriting.
+
 ## One-Command Smoke
 
 From the repository root on Jetson:

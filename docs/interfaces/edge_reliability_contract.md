@@ -247,6 +247,7 @@ Verified on Jetson:
 - `ros2 interface show` succeeded for `SensorSample`, `PipelineMetrics`, `SystemMetrics`, and `HealthState`.
 - Generated outputs remained ignored under `ros2_ws/build/`, `ros2_ws/install/`, `ros2_ws/log/`, and `runtime/`.
 - P0-007 processor smoke completed with `SMOKE_EXIT_STATUS=0`: `/edge/metrics/pipeline` published `PipelineMetrics` from `sensor_processor`, sensor rate measured 100.003Hz, metrics rate measured 1.000Hz, and rosbag recorded both `/edge/sensors/fake_primary` and `/edge/metrics/pipeline`.
+- P0-008 normal replay completed with `SMOKE_EXIT_STATUS=0`: a raw sensor bag under `runtime/bags/p0-008/normal_replay_20260611T023316Z` recorded 764 samples, replay drove `sensor_processor` to receive 763 samples, and replay metrics reported 99.989Hz, zero drops, and zero out-of-order samples.
 
 Re-run commands:
 

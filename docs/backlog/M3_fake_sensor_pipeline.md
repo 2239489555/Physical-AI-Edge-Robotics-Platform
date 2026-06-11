@@ -35,7 +35,9 @@ The project has no real sensors. The fake sensor must still train real concepts:
 - `ros2_ws/src/edge_reliability_processor` publishes `/edge/metrics/pipeline` as `edge_reliability_msgs/msg/PipelineMetrics` from `sensor_processor`.
 - Jetson smoke evidence passed with `SMOKE_EXIT_STATUS=0`, 3 accumulator tests passing, sensor rate at 100.003Hz, metrics rate at 1.000Hz, zero observed drops/out-of-order samples, and a short rosbag containing 772 messages across sensor and metrics topics.
 - Follow-up script hardening changed P0-007 launch cleanup to bounded INT/TERM/KILL shutdown after a manual run reported cleanup could hang; the hardened script was rechecked under `timeout 120s`, finished in about 50 seconds, and left no fake sensor or processor residual processes.
-- P0-008 implementation is prepared with a normal replay runbook and Jetson smoke script that records `/edge/sensors/fake_primary`, stops the live publisher, replays the bag into `sensor_processor`, and compares replayed metrics. Jetson verification is still pending.
+- P0-008 rosbag record/replay workflow is completed and Jetson verified on 2026-06-11.
+- `runtime/bags/p0-008/normal_replay_20260611T023316Z` captured 764 raw sensor samples, replay drove `sensor_processor` to receive 763 samples, and replay metrics matched within tolerance with 0 drops, 0 out-of-order samples, 99.989Hz receive rate, and a 0.999 receive ratio.
+- P0-008 replay latency is intentionally documented as non-comparable to live latency because recorded `SensorSample.header.stamp` values keep the original record-time wall clock.
 
 ## Technical Constraints
 
