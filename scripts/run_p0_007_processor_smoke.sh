@@ -45,22 +45,85 @@ BLOCKER="-"
 SENSOR_LAST_RATE=""
 METRICS_LAST_RATE=""
 BAG_MESSAGES=""
+CLEANUP_INT_WAIT_SECONDS=8
+CLEANUP_TERM_WAIT_SECONDS=5
 
 mkdir -p "$ARTIFACT_DIR" "$LOG_DIR" "$RESULT_DIR" "$BAG_PARENT"
 
 trap cleanup_launches EXIT
 
-cleanup_launches() {
-  if [[ -n "${PROCESSOR_LAUNCH_PID:-}" ]] && kill -0 "$PROCESSOR_LAUNCH_PID" 2>/dev/null; then
-    kill -INT "$PROCESSOR_LAUNCH_PID" 2>/dev/null || true
-    wait "$PROCESSOR_LAUNCH_PID" 2>/dev/null || true
+signal_process_tree() {
+  local signal="$1"
+  local pid="$2"
+  local child
+  local children
+
+  if command -v pgrep >/dev/null 2>&1; then
+    children="$(pgrep -P "$pid" 2>/dev/null || true)"
+    for child in $children; do
+      signal_process_tree "$signal" "$child"
+    done
   fi
+
+  kill "-$signal" "$pid" 2>/dev/null || true
+}
+
+wait_for_background_process_exit() {
+  local pid="$1"
+  local wait_seconds="$2"
+  local deadline=$((SECONDS + wait_seconds))
+
+  while (( SECONDS < deadline )); do
+    if ! kill -0 "$pid" 2>/dev/null; then
+      wait "$pid" 2>/dev/null || true
+      return 0
+    fi
+    sleep 1
+  done
+
+  return 1
+}
+
+stop_background_process() {
+  local pid="$1"
+  local label="$2"
+
+  if [[ -z "$pid" ]]; then
+    return 0
+  fi
+
+  if ! kill -0 "$pid" 2>/dev/null; then
+    wait "$pid" 2>/dev/null || true
+    return 0
+  fi
+
+  signal_process_tree INT "$pid"
+  if wait_for_background_process_exit "$pid" "$CLEANUP_INT_WAIT_SECONDS"; then
+    return 0
+  fi
+
+  echo "[cleanup] $label did not stop after SIGINT; sending SIGTERM" >&2
+  signal_process_tree TERM "$pid"
+  if wait_for_background_process_exit "$pid" "$CLEANUP_TERM_WAIT_SECONDS"; then
+    return 0
+  fi
+
+  echo "[cleanup] $label did not stop after SIGTERM; sending SIGKILL" >&2
+  signal_process_tree KILL "$pid"
+  sleep 1
+  if ! kill -0 "$pid" 2>/dev/null; then
+    wait "$pid" 2>/dev/null || true
+    return 0
+  fi
+
+  echo "[cleanup] $label still appears alive after SIGKILL: pid=$pid" >&2
+}
+
+cleanup_launches() {
+  stop_background_process "${PROCESSOR_LAUNCH_PID:-}" "processor launch"
   PROCESSOR_LAUNCH_PID=""
 
-  if [[ -n "${FAKE_LAUNCH_PID:-}" ]] && kill -0 "$FAKE_LAUNCH_PID" 2>/dev/null; then
-    kill -INT "$FAKE_LAUNCH_PID" 2>/dev/null || true
-    wait "$FAKE_LAUNCH_PID" 2>/dev/null || true
-  fi
+  stop_background_process "${FAKE_LAUNCH_PID:-}" "fake sensor launch"
   FAKE_LAUNCH_PID=""
 }
 

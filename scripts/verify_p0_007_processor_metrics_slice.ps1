@@ -273,6 +273,14 @@ foreach ($text in @(
     "runtime/logs",
     "runtime/bags/p0-007",
     "source_setup_with_nounset_disabled",
+    "CLEANUP_INT_WAIT_SECONDS=8",
+    "CLEANUP_TERM_WAIT_SECONDS=5",
+    "signal_process_tree",
+    "wait_for_background_process_exit",
+    "stop_background_process",
+    "signal_process_tree INT",
+    "signal_process_tree TERM",
+    "signal_process_tree KILL",
     "PASS/FAIL:"
 )) {
     Assert-Contains "scripts/run_p0_007_processor_smoke.sh" $smokeScript $text

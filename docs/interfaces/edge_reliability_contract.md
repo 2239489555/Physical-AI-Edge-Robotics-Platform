@@ -1,6 +1,6 @@
 # Edge Reliability Interface Contract
 
-Status: P0 stable contract, P0-006 Jetson verified, P0-007 implementation ready for Jetson verification
+Status: P0 stable contract, P0-006 and P0-007 Jetson verified
 
 This document defines the ROS 2 interfaces for the Edge Robotics Reliability Lab. It is the implementation boundary for fake inputs, replayed bags, and future hardware adapters.
 
@@ -238,6 +238,7 @@ Verified on Jetson:
 - `colcon build --packages-select edge_reliability_msgs --symlink-install` completed with `Summary: 1 package finished [10.1s]`.
 - `ros2 interface show` succeeded for `SensorSample`, `PipelineMetrics`, `SystemMetrics`, and `HealthState`.
 - Generated outputs remained ignored under `ros2_ws/build/`, `ros2_ws/install/`, `ros2_ws/log/`, and `runtime/`.
+- P0-007 processor smoke completed with `SMOKE_EXIT_STATUS=0`: `/edge/metrics/pipeline` published `PipelineMetrics` from `sensor_processor`, sensor rate measured 100.003Hz, metrics rate measured 1.000Hz, and rosbag recorded both `/edge/sensors/fake_primary` and `/edge/metrics/pipeline`.
 
 Re-run commands:
 

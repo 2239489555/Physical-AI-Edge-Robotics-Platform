@@ -31,8 +31,10 @@ The project has no real sensors. The fake sensor must still train real concepts:
 - `ros2_ws/src/edge_reliability_fake_sensor` publishes `/edge/sensors/fake_primary` as `edge_reliability_msgs/msg/SensorSample`.
 - Jetson smoke evidence passed with `SMOKE_EXIT_STATUS=0`, 99.998Hz measured rate, one valid echoed sample, and a short rosbag containing 765 messages.
 - Local completion verification passes with `scripts/verify_p0_006_completion_gate.ps1` against the returned Jetson smoke report.
-- P0-007 implementation is prepared in `ros2_ws/src/edge_reliability_processor` with processor metrics, receive rate, sequence continuity, latency, drop detection, unit-testable accumulator logic, and a Jetson smoke script.
-- P0-007 still needs Jetson smoke evidence before being marked complete.
+- P0-007 processor metrics subscriber is completed and Jetson verified on 2026-06-11.
+- `ros2_ws/src/edge_reliability_processor` publishes `/edge/metrics/pipeline` as `edge_reliability_msgs/msg/PipelineMetrics` from `sensor_processor`.
+- Jetson smoke evidence passed with `SMOKE_EXIT_STATUS=0`, 3 accumulator tests passing, sensor rate at 100.003Hz, metrics rate at 1.000Hz, zero observed drops/out-of-order samples, and a short rosbag containing 772 messages across sensor and metrics topics.
+- Follow-up script hardening changed P0-007 launch cleanup to bounded INT/TERM/KILL shutdown after a manual run reported cleanup could hang.
 
 ## Technical Constraints
 

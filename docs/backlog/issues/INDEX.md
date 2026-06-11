@@ -19,7 +19,7 @@
 | P0-004 | 机器人零基础上手指南与命令证据（文档完成，待复述） | HITL | P0-003 |
 | P0-005 | Edge reliability 消息定义与接口契约（已完成） | AFK | P0-003 |
 | P0-006 | 100Hz fake sensor publisher 垂直切片（已完成） | AFK | P0-005 |
-| P0-007 | Processor metrics subscriber 垂直切片 | AFK | P0-006 |
+| P0-007 | Processor metrics subscriber 垂直切片（已完成） | AFK | P0-006 |
 | P0-008 | rosbag 录制与回放工作流 | AFK | P0-007 |
 | P0-009 | 丢帧与 subscriber delay 故障注入 | AFK | P0-007 |
 | P0-010 | 可配置阈值的 health monitor | AFK | P0-009 |
