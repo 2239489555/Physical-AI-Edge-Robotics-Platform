@@ -25,9 +25,11 @@ Jetson-specific observability is central to edge robotics work. tegrastats is th
 
 ## Current Progress
 
-- P0-011 implementation is prepared for Jetson verification.
-- `ros2_ws/src/edge_reliability_system` adds `system_metrics_node`, `tegrastats_parser.hpp`, parser unit tests, representative sample data, and `/edge/metrics/system` publication.
-- The P0-011 smoke uses `sample_file` mode by default so parser and ROS topic behavior can be verified even when live `tegrastats` is unavailable.
+- P0-011 tegrastats parser and system metrics node is completed and Jetson verified on 2026-06-11.
+- `ros2_ws/src/edge_reliability_system` publishes `/edge/metrics/system` from `system_metrics_node` as `edge_reliability_msgs/msg/SystemMetrics`.
+- Parser unit tests passed with representative tegrastats sample lines, and the Jetson smoke captured 6 sample-file metrics messages.
+- The returned sample-file metrics showed `memory_used_mb: 3300.000`, `memory_total_mb: 62832.000`, `gpu_percent: 14.000`, `temperature_c: 42.000`, `power_w: 6.190`, and `source: tegrastats_sample_file`.
+- Live `tegrastats` was available on the Jetson rerun and wrote three probe lines under `runtime/logs/tegrastats`.
 - Raw sample input is written under `runtime/logs/tegrastats`.
 
 ## Technical Constraints
