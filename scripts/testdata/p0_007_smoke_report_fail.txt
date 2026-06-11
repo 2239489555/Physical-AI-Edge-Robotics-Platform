@@ -1,0 +1,35 @@
+P0-007_RESULT
+
+Build
+colcon exit status: 0
+
+Unit Tests
+colcon test exit status: 0
+
+Topic Evidence
+metrics topic info:
+Type: edge_reliability_msgs/msg/PipelineMetrics
+Publisher count: 1
+Node name: sensor_processor
+metrics echo once:
+received_count: 4
+expected_count: 4
+dropped_count: 0
+out_of_order_count: 0
+receive_rate_hz: 12.0
+expected_rate_hz: 100.0
+average_latency_ms: 0.8
+p95_latency_ms: 1.5
+p99_latency_ms: 2.0
+drop_rate: 0.0
+sensor last average rate: 12.0
+metrics last average rate: 1.0
+
+Rosbag Evidence
+bag directory: /home/jetson/chengwei/runtime/bags/p0-007/processor_smoke_20260611T010000Z
+bag messages: 10
+runtime/bags/p0-007
+
+Verdict
+PASS/FAIL: FAIL
+Blocker if FAIL: sensor rate degraded

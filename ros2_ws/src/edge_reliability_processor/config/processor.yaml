@@ -1,0 +1,13 @@
+sensor_processor:
+  ros__parameters:
+    sensor_topic: /edge/sensors/fake_primary
+    metrics_topic: /edge/metrics/pipeline
+    metrics_frame_id: pipeline_metrics_frame
+    expected_hz: 100.0
+    metrics_publish_hz: 1.0
+    latency_warn_ms: 20.0
+    latency_unhealthy_ms: 50.0
+    sensor_qos_depth: 10
+    metrics_qos_depth: 10
+    rate_window_seconds: 5.0
+    latency_window_size: 1000

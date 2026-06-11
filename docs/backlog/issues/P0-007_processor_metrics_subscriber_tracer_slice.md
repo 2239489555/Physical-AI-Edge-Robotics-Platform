@@ -12,6 +12,15 @@ User stories covered: 4, 6, 7, 10, 17, 20
 
 Add a C++ processor subscriber that consumes fake sensor samples and publishes observable pipeline metrics.
 
+## Implementation notes
+
+- Package: `ros2_ws/src/edge_reliability_processor`.
+- Node: `sensor_processor`.
+- Input topic: `/edge/sensors/fake_primary`.
+- Output topic: `/edge/metrics/pipeline`.
+- Metric logic is isolated in `PipelineMetricsAccumulator` so sequence gaps, out-of-order samples, rate, and latency can be tested without ROS graph timing.
+- Completion requires returned Jetson smoke evidence from `scripts/run_p0_007_processor_smoke.sh`.
+
 ## Acceptance criteria
 
 - [ ] Processor subscribes to the fake sensor topic using configurable QoS.

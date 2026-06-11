@@ -31,7 +31,8 @@ The project has no real sensors. The fake sensor must still train real concepts:
 - `ros2_ws/src/edge_reliability_fake_sensor` publishes `/edge/sensors/fake_primary` as `edge_reliability_msgs/msg/SensorSample`.
 - Jetson smoke evidence passed with `SMOKE_EXIT_STATUS=0`, 99.998Hz measured rate, one valid echoed sample, and a short rosbag containing 765 messages.
 - Local completion verification passes with `scripts/verify_p0_006_completion_gate.ps1` against the returned Jetson smoke report.
-- Remaining M3 work starts at P0-007 for processor metrics, receive rate, sequence continuity, latency, and drop detection.
+- P0-007 implementation is prepared in `ros2_ws/src/edge_reliability_processor` with processor metrics, receive rate, sequence continuity, latency, drop detection, unit-testable accumulator logic, and a Jetson smoke script.
+- P0-007 still needs Jetson smoke evidence before being marked complete.
 
 ## Technical Constraints
 

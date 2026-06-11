@@ -1,6 +1,6 @@
 # Edge Reliability Interface Contract
 
-Status: P0 stable contract, Jetson verified
+Status: P0 stable contract, P0-006 Jetson verified, P0-007 implementation ready for Jetson verification
 
 This document defines the ROS 2 interfaces for the Edge Robotics Reliability Lab. It is the implementation boundary for fake inputs, replayed bags, and future hardware adapters.
 
@@ -26,7 +26,7 @@ Message types:
 | Topic | Type | Publisher | Subscribers | QoS | Purpose |
 | --- | --- | --- | --- | --- | --- |
 | `/edge/sensors/fake_primary` | `edge_reliability_msgs/msg/SensorSample` | `fake_sensor_adapter` | `sensor_processor`, rosbag | Sensor data QoS, keep last 10, best effort acceptable for high-rate streams | Primary fake sensor stream for P0 |
-| `/edge/metrics/pipeline` | `edge_reliability_msgs/msg/PipelineMetrics` | `pipeline_metrics_node` | `health_monitor`, dashboards, rosbag | Reliable, keep last 10 | Rate, latency, drop, and sequence metrics |
+| `/edge/metrics/pipeline` | `edge_reliability_msgs/msg/PipelineMetrics` | `sensor_processor` for P0-007 | `health_monitor`, dashboards, rosbag | Reliable, keep last 10 | Rate, latency, drop, and sequence metrics |
 | `/edge/metrics/system` | `edge_reliability_msgs/msg/SystemMetrics` | `system_metrics_node` | `health_monitor`, dashboards, rosbag | Reliable, keep last 10 | Jetson CPU, memory, GPU, temperature, and power metrics |
 | `/edge/health/state` | `edge_reliability_msgs/msg/HealthState` | `health_monitor` | dashboards, runtime scripts, rosbag | Reliable, transient local optional, keep last 1 | Coarse health state and active rule reasons |
 
@@ -50,21 +50,27 @@ Required semantics:
 
 ### PipelineMetrics
 
-Use `PipelineMetrics` for metrics computed from `SensorSample` traffic.
+Use `PipelineMetrics` for metrics computed from `SensorSample` traffic. P0-007 publishes this message from the `sensor_processor` node.
 
 Required semantics:
 
 - `header.stamp`: end time of the aggregation window.
-- `received_count`: total samples received in the current run or window, as defined by the node README.
-- `expected_count`: expected samples for the same run or window.
-- `dropped_count`: expected minus received, or sequence-gap-derived drop count when sequence tracking is active.
+- `received_count`: total samples received since the processor node started.
+- `expected_count`: `received_count + dropped_count` for the same processor run.
+- `dropped_count`: sequence-gap-derived drop count when sequence tracking is active.
 - `out_of_order_count`: samples where `sequence_id` moves backward or duplicates unexpectedly.
-- `receive_rate_hz`: measured subscriber rate.
+- `receive_rate_hz`: measured subscriber rate over the rolling rate window.
 - `expected_rate_hz`: configured target rate.
-- `average_latency_ms`: average publish-to-receive latency.
-- `p95_latency_ms`: 95th percentile latency.
-- `p99_latency_ms`: 99th percentile latency.
+- `average_latency_ms`: average publish-to-receive latency in milliseconds.
+- `p95_latency_ms`: 95th percentile latency in milliseconds.
+- `p99_latency_ms`: 99th percentile latency in milliseconds.
 - `drop_rate`: dropped_count divided by expected_count.
+
+P0-007 window definition:
+
+- `receive_rate_hz` uses the `rate_window_seconds` parameter, defaulting to a 5 second rolling window.
+- `average_latency_ms`, `p95_latency_ms`, and `p99_latency_ms` use the `latency_window_size` parameter, defaulting to the latest 1000 samples.
+- Health decisions are intentionally out of scope for P0-007; the metrics topic only exposes evidence.
 
 ### SystemMetrics
 
@@ -115,8 +121,8 @@ Adapters must not own pipeline metrics, health state, dashboard formatting, or r
 
 ### Processor And Metrics Nodes
 
-- `sensor_processor`: subscribes to `/edge/sensors/fake_primary`, validates sequence continuity, measures latency, and emits data needed by metrics.
-- `pipeline_metrics_node`: publishes `/edge/metrics/pipeline`.
+- `sensor_processor`: subscribes to `/edge/sensors/fake_primary`, validates sequence continuity, measures latency, and publishes `/edge/metrics/pipeline` for the P0-007 vertical slice.
+- `pipeline_metrics_node`: optional future split if metrics publication needs to move out of `sensor_processor`.
 - `system_metrics_node`: publishes `/edge/metrics/system`.
 
 These nodes must not own hardware access. They should work from live topics or rosbag replay.
@@ -139,6 +145,11 @@ Recommended P0 parameters:
 | `sensor_processor` | `expected_hz` | `100.0` | Target rate for metrics |
 | `sensor_processor` | `latency_warn_ms` | `20.0` | Warning threshold for latency |
 | `sensor_processor` | `latency_unhealthy_ms` | `50.0` | Unhealthy threshold for latency |
+| `sensor_processor` | `sensor_topic` | `/edge/sensors/fake_primary` | Input `SensorSample` topic |
+| `sensor_processor` | `metrics_topic` | `/edge/metrics/pipeline` | Output `PipelineMetrics` topic |
+| `sensor_processor` | `metrics_publish_hz` | `1.0` | Metrics publication rate |
+| `sensor_processor` | `rate_window_seconds` | `5.0` | Rolling receive-rate window |
+| `sensor_processor` | `latency_window_size` | `1000` | Rolling latency sample window |
 | `health_monitor` | `max_drop_rate_warning` | `0.001` | Warning drop-rate threshold |
 | `health_monitor` | `max_drop_rate_unhealthy` | `0.01` | Unhealthy drop-rate threshold |
 

@@ -1,0 +1,43 @@
+P0-007_RESULT
+
+Build
+colcon exit status: 0
+build summary:
+Starting >>> edge_reliability_msgs
+Finished <<< edge_reliability_msgs [0.77s]
+Starting >>> edge_reliability_fake_sensor
+Finished <<< edge_reliability_fake_sensor [0.22s]
+Starting >>> edge_reliability_processor
+Finished <<< edge_reliability_processor [1.20s]
+Summary: 3 packages finished [2.40s]
+
+Unit Tests
+colcon test exit status: 0
+
+Topic Evidence
+metrics topic info:
+Type: edge_reliability_msgs/msg/PipelineMetrics
+Publisher count: 1
+Node name: sensor_processor
+metrics echo once:
+received_count: 500
+expected_count: 500
+dropped_count: 0
+out_of_order_count: 0
+receive_rate_hz: 99.9
+expected_rate_hz: 100.0
+average_latency_ms: 0.8
+p95_latency_ms: 1.5
+p99_latency_ms: 2.0
+drop_rate: 0.0
+sensor last average rate: 99.8
+metrics last average rate: 1.0
+
+Rosbag Evidence
+bag directory: /home/jetson/chengwei/runtime/bags/p0-007/processor_smoke_20260611T010000Z
+bag messages: 770
+runtime/bags/p0-007
+
+Verdict
+PASS/FAIL: PASS
+Blocker if FAIL: -
