@@ -11,5 +11,5 @@ sensor_processor:
     metrics_qos_depth: 10
     rate_window_seconds: 5.0
     latency_window_size: 1000
-    processing_delay_enabled: false
-    processing_delay_ms: 0.0
+    processing_delay_enabled: true
+    processing_delay_ms: 8.0

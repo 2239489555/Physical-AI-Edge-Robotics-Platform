@@ -4,10 +4,10 @@ fake_sensor_adapter:
     sensor_id: fake_primary
     frame_id: fake_sensor_frame
     publish_hz: 100.0
-    status_mode: "ok"
-    fault_mode: "off"
-    drop_enabled: false
-    drop_probability: 0.0
-    drop_seed: 1
+    status_mode: "warn"
+    fault_mode: "drop"
+    drop_enabled: true
+    drop_probability: 0.2
+    drop_seed: 42
     qos_depth: 10
     qos_reliability: best_effort

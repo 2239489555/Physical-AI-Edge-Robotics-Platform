@@ -142,6 +142,9 @@ Recommended P0 parameters:
 | `fake_sensor_adapter` | `frame_id` | `fake_sensor_frame` | Logical frame in `header.frame_id` |
 | `fake_sensor_adapter` | `publish_hz` | `100.0` | Target fake sensor rate |
 | `fake_sensor_adapter` | `status_mode` | `ok` | Fault injection status behavior |
+| `fake_sensor_adapter` | `drop_enabled` | `false` | P0-009 synthetic drop injection switch |
+| `fake_sensor_adapter` | `drop_probability` | `0.0` | P0-009 synthetic drop probability from 0.0 to 1.0 |
+| `fake_sensor_adapter` | `drop_seed` | `1` | P0-009 deterministic random seed for repeatable drop runs |
 | `sensor_processor` | `expected_hz` | `100.0` | Target rate for metrics |
 | `sensor_processor` | `latency_warn_ms` | `20.0` | Warning threshold for latency |
 | `sensor_processor` | `latency_unhealthy_ms` | `50.0` | Unhealthy threshold for latency |
@@ -150,6 +153,8 @@ Recommended P0 parameters:
 | `sensor_processor` | `metrics_publish_hz` | `1.0` | Metrics publication rate |
 | `sensor_processor` | `rate_window_seconds` | `5.0` | Rolling receive-rate window |
 | `sensor_processor` | `latency_window_size` | `1000` | Rolling latency sample window |
+| `sensor_processor` | `processing_delay_enabled` | `false` | P0-009 subscriber delay injection switch |
+| `sensor_processor` | `processing_delay_ms` | `0.0` | P0-009 per-sample delay used to increase `p95_latency_ms` and `p99_latency_ms` |
 | `health_monitor` | `max_drop_rate_warning` | `0.001` | Warning drop-rate threshold |
 | `health_monitor` | `max_drop_rate_unhealthy` | `0.01` | Unhealthy drop-rate threshold |
 
@@ -214,6 +219,13 @@ P0-008 normal replay:
 - do not replay `/edge/metrics/pipeline` while `sensor_processor` is publishing fresh metrics, because that creates ambiguous metrics evidence.
 - Rule: do not replay /edge/metrics/pipeline while `sensor_processor` is publishing.
 
+P0-009 fault injection bags:
+
+- record drop and delay scenarios under `runtime/bags/p0-009`;
+- include `/edge/sensors/fake_primary` and `/edge/metrics/pipeline`;
+- use the report to compare normal vs fault `drop_rate`, `p95_latency_ms`, and `p99_latency_ms`;
+- keep fault bags out of git.
+
 ## Failure Modes
 
 The P0 pipeline should make these failure modes visible:
@@ -230,6 +242,12 @@ The P0 pipeline should make these failure modes visible:
 - rosbag replay missing required topics.
 
 Each failure should map to either `PipelineMetrics`, `SystemMetrics`, or `HealthState` evidence.
+
+P0-009 injected failure modes:
+
+- `drop_enabled` plus `drop_probability` creates sequence gaps while keeping generated sequence IDs monotonic;
+- `processing_delay_enabled` plus `processing_delay_ms` increases subscriber-side latency without changing the message contract;
+- `sensor_processor` must expose the effect through `dropped_count`, `drop_rate`, `p95_latency_ms`, and `p99_latency_ms`.
 
 ## Stability Rules
 

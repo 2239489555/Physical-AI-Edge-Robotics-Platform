@@ -2,7 +2,7 @@
 
 100Hz fake sensor adapter for P0-006.
 
-This package publishes `edge_reliability_msgs/msg/SensorSample` on `/edge/sensors/fake_primary`. It is the first real P0 data-source slice and intentionally owns only adapter behavior. Subscriber metrics, fault injection, and full rosbag workflow checks belong to later tasks.
+This package publishes `edge_reliability_msgs/msg/SensorSample` on `/edge/sensors/fake_primary`. It is the first real P0 data-source slice and intentionally owns only adapter behavior. Subscriber metrics and full rosbag workflow checks belong to downstream packages and scripts.
 
 ## Build
 
@@ -54,6 +54,23 @@ ros2 launch edge_reliability_fake_sensor fake_sensor.launch.py config_file:=$(pw
 ```
 
 The default config publishes at 100Hz with `fault_mode: "off"`.
+
+## Drop Fault Injection
+
+P0-009 adds deterministic random drop injection through YAML:
+
+```bash
+ros2 launch edge_reliability_fake_sensor fake_sensor.launch.py \
+  config_file:=$(pwd)/src/edge_reliability_fake_sensor/config/fake_sensor_drop.yaml
+```
+
+Key parameters:
+
+- `drop_enabled`: enables skipped publishes.
+- `drop_probability`: probability that the current sequence ID is skipped.
+- `drop_seed`: deterministic random seed for repeatable runs.
+
+Dropped samples still advance `sequence_id`, which creates sequence gaps for `sensor_processor` to count as drops. Use `scripts/run_p0_009_fault_injection_smoke.sh` for the normal-vs-fault comparison.
 
 ## Topic Checks
 

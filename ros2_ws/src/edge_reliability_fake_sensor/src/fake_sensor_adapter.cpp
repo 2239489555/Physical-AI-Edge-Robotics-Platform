@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <functional>
 #include <memory>
+#include <random>
 #include <string>
 #include <utility>
 
@@ -23,10 +24,14 @@ public:
     topic_ = declare_parameter<std::string>("topic", "/edge/sensors/fake_primary");
     status_mode_ = declare_parameter<std::string>("status_mode", "ok");
     fault_mode_ = declare_parameter<std::string>("fault_mode", "off");
+    drop_enabled_ = declare_parameter<bool>("drop_enabled", false);
+    drop_probability_ = declare_parameter<double>("drop_probability", 0.0);
+    drop_seed_ = declare_parameter<int>("drop_seed", 1);
     qos_depth_ = declare_parameter<int>("qos_depth", 10);
     qos_reliability_ = declare_parameter<std::string>("qos_reliability", "best_effort");
 
     normalize_parameters();
+    rng_.seed(static_cast<uint32_t>(drop_seed_));
 
     const auto status = resolve_status(status_mode_);
     status_ = status.first;
@@ -56,7 +61,7 @@ public:
       get_logger(),
       "event=startup node=fake_sensor_adapter topic=%s type=edge_reliability_msgs/msg/SensorSample "
       "publish_hz=%.3f sensor_id=%s frame_id=%s status_mode=%s fault_mode=%s qos_depth=%d "
-      "qos_reliability=%s",
+      "qos_reliability=%s drop_enabled=%s drop_probability=%.3f drop_seed=%d",
       topic_.c_str(),
       publish_hz_,
       sensor_id_.c_str(),
@@ -64,15 +69,21 @@ public:
       status_mode_.c_str(),
       fault_mode_.c_str(),
       qos_depth_,
-      qos_reliability_.c_str());
+      qos_reliability_.c_str(),
+      drop_enabled_ ? "true" : "false",
+      drop_probability_,
+      drop_seed_);
   }
 
   ~FakeSensorAdapter() override
   {
     RCLCPP_INFO(
       get_logger(),
-      "event=shutdown node=fake_sensor_adapter reason=node_destroyed published_count=%lu",
-      static_cast<unsigned long>(sequence_id_));
+      "event=shutdown node=fake_sensor_adapter reason=node_destroyed attempted_count=%lu "
+      "published_count=%lu dropped_injected_count=%lu",
+      static_cast<unsigned long>(sequence_id_),
+      static_cast<unsigned long>(published_count_),
+      static_cast<unsigned long>(dropped_injected_count_));
   }
 
 private:
@@ -111,11 +122,43 @@ private:
       qos_depth_ = 10;
     }
 
-    if (fault_mode_ != "off") {
+    if (drop_probability_ < 0.0) {
       RCLCPP_WARN(
         get_logger(),
-        "event=parameter_notice parameter=fault_mode value=%s note=fault_injection_is_deferred",
+        "event=parameter_fallback parameter=drop_probability value=%.3f fallback=0.0",
+        drop_probability_);
+      drop_probability_ = 0.0;
+    }
+
+    if (drop_probability_ > 1.0) {
+      RCLCPP_WARN(
+        get_logger(),
+        "event=parameter_fallback parameter=drop_probability value=%.3f fallback=1.0",
+        drop_probability_);
+      drop_probability_ = 1.0;
+    }
+
+    if (fault_mode_ == "drop" && !drop_enabled_) {
+      RCLCPP_WARN(
+        get_logger(),
+        "event=parameter_fallback parameter=drop_enabled value=false fallback=true reason=fault_mode_drop");
+      drop_enabled_ = true;
+    }
+
+    if (fault_mode_ != "off" && fault_mode_ != "drop") {
+      RCLCPP_WARN(
+        get_logger(),
+        "event=parameter_fallback parameter=fault_mode value=%s fallback=off",
         fault_mode_.c_str());
+      fault_mode_ = "off";
+    }
+
+    if (drop_seed_ < 0) {
+      RCLCPP_WARN(
+        get_logger(),
+        "event=parameter_fallback parameter=drop_seed value=%d fallback=1",
+        drop_seed_);
+      drop_seed_ = 1;
     }
   }
 
@@ -145,6 +188,30 @@ private:
 
   void publish_sample()
   {
+    if (should_drop_sample()) {
+      const auto dropped_sequence_id = sequence_id_;
+      ++dropped_injected_count_;
+      ++sequence_id_;
+
+      RCLCPP_DEBUG(
+        get_logger(),
+        "event=drop_injected sequence_id=%lu drop_probability=%.3f",
+        static_cast<unsigned long>(dropped_sequence_id),
+        drop_probability_);
+
+      if (!logged_first_drop_) {
+        RCLCPP_INFO(
+          get_logger(),
+          "event=first_drop_injected sequence_id=%lu drop_probability=%.3f drop_seed=%d",
+          static_cast<unsigned long>(dropped_sequence_id),
+          drop_probability_,
+          drop_seed_);
+        logged_first_drop_ = true;
+      }
+
+      return;
+    }
+
     edge_reliability_msgs::msg::SensorSample message;
     message.header.stamp = now();
     message.header.frame_id = frame_id_;
@@ -155,6 +222,7 @@ private:
     message.status_detail = status_detail_;
 
     publisher_->publish(message);
+    ++published_count_;
 
     if (!logged_first_sample_) {
       RCLCPP_INFO(
@@ -170,6 +238,15 @@ private:
     ++sequence_id_;
   }
 
+  bool should_drop_sample()
+  {
+    if (!drop_enabled_ || drop_probability_ <= 0.0) {
+      return false;
+    }
+
+    return drop_distribution_(rng_) < drop_probability_;
+  }
+
   rclcpp::Publisher<edge_reliability_msgs::msg::SensorSample>::SharedPtr publisher_;
   rclcpp::TimerBase::SharedPtr timer_;
   double publish_hz_{100.0};
@@ -178,12 +255,20 @@ private:
   std::string topic_{"/edge/sensors/fake_primary"};
   std::string status_mode_{"ok"};
   std::string fault_mode_{"off"};
+  bool drop_enabled_{false};
+  double drop_probability_{0.0};
+  int drop_seed_{1};
   int qos_depth_{10};
   std::string qos_reliability_{"best_effort"};
   uint64_t sequence_id_{0};
+  uint64_t published_count_{0};
+  uint64_t dropped_injected_count_{0};
   uint8_t status_{edge_reliability_msgs::msg::SensorSample::STATUS_OK};
   std::string status_detail_{"ok"};
+  std::mt19937 rng_{1};
+  std::uniform_real_distribution<double> drop_distribution_{0.0, 1.0};
   bool logged_first_sample_{false};
+  bool logged_first_drop_{false};
 };
 
 }  // namespace edge_reliability_fake_sensor

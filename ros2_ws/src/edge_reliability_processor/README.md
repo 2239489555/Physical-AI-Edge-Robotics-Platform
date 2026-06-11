@@ -46,6 +46,22 @@ ros2 topic info /edge/metrics/pipeline -v
 ros2 topic echo --once /edge/metrics/pipeline edge_reliability_msgs/msg/PipelineMetrics
 ```
 
+## Subscriber Delay Fault Injection
+
+P0-009 adds a YAML-configurable processing delay:
+
+```bash
+ros2 launch edge_reliability_processor processor.launch.py \
+  config_file:=$(pwd)/src/edge_reliability_processor/config/processor_delay.yaml
+```
+
+Key parameters:
+
+- `processing_delay_enabled`: enables per-sample sleep inside the subscriber callback.
+- `processing_delay_ms`: delay applied before the sample is observed by the metrics accumulator.
+
+This should increase `average_latency_ms`, `p95_latency_ms`, and `p99_latency_ms` compared with the normal config. Use `scripts/run_p0_009_fault_injection_smoke.sh` for the normal-vs-fault comparison.
+
 ## Smoke Gate
 
 From the repository root on Jetson:

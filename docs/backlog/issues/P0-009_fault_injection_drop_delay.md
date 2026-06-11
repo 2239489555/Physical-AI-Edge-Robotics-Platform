@@ -21,16 +21,23 @@ Introduce controlled fault injection for random dropped samples and subscriber d
 - [ ] Fault scenarios can be recorded and replayed with rosbag.
 - [ ] Test report includes normal vs fault metric comparison.
 
+## Implementation notes
+
+- `ros2_ws/src/edge_reliability_fake_sensor/config/fake_sensor_drop.yaml` enables deterministic random drops with `fault_mode: "drop"`, `drop_enabled: true`, `drop_probability: 0.2`, and `drop_seed: 42`.
+- `ros2_ws/src/edge_reliability_processor/config/processor_delay.yaml` enables subscriber delay with `processing_delay_enabled: true` and `processing_delay_ms: 8.0`.
+- `scripts/run_p0_009_fault_injection_smoke.sh` is the Jetson evidence script. It compares normal, drop-fault, and subscriber-delay scenarios and records fault bags under `runtime/bags/p0-009`.
+- `scripts/verify_p0_009_smoke_report.ps1` validates the returned report before the issue can be marked complete.
+- Completion requires returned Jetson smoke evidence with `PASS/FAIL: PASS`.
+
 ## Blocked by
 
 - P0-007
 
 ## Verification commands
 
-- `colcon build`
-- `ros2 launch <package> <fault_config_launch>`
-- `ros2 topic echo <metrics_topic>`
-- `ros2 bag record <topics>`
+- `bash scripts/run_p0_009_fault_injection_smoke.sh`
+- `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_009_smoke_report.ps1 -ReportPath runtime\results\p0_009_smoke_report.txt`
+- `ros2 bag info <fault_bag_dir>`
 - `ros2 bag play <fault_bag_dir>`
 
 ## Runtime artifact location

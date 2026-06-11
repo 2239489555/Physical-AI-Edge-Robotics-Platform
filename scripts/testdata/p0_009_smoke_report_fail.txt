@@ -1,0 +1,22 @@
+P0-009_RESULT
+
+Build
+colcon exit status: 0
+
+Normal Scenario
+normal drop rate: 0.000000
+normal p95 latency ms: 0.500
+
+Drop Fault Scenario
+drop fault bag messages: 700
+drop fault drop rate: 0.000000
+drop rate increase: 0.000000
+
+Delay Fault Scenario
+delay fault bag messages: 700
+delay fault p95 latency ms: 1.000
+p95 latency increase ms: 0.500
+
+Verdict
+PASS/FAIL: FAIL
+Blocker if FAIL: fault signal did not increase

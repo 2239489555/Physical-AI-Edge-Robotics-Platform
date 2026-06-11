@@ -38,6 +38,7 @@ The project has no real sensors. The fake sensor must still train real concepts:
 - P0-008 rosbag record/replay workflow is completed and Jetson verified on 2026-06-11.
 - `runtime/bags/p0-008/normal_replay_20260611T023316Z` captured 764 raw sensor samples, replay drove `sensor_processor` to receive 763 samples, and replay metrics matched within tolerance with 0 drops, 0 out-of-order samples, 99.989Hz receive rate, and a 0.999 receive ratio.
 - P0-008 replay latency is intentionally documented as non-comparable to live latency because recorded `SensorSample.header.stamp` values keep the original record-time wall clock.
+- P0-009 fault injection implementation is prepared for Jetson verification. It adds deterministic random sample drops in `fake_sensor_adapter`, subscriber processing delay in `sensor_processor`, normal vs fault metric comparison, and fault rosbag output under `runtime/bags/p0-009`.
 
 ## Technical Constraints
 

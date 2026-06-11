@@ -3,6 +3,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <thread>
 
 #include "builtin_interfaces/msg/time.hpp"
 #include "edge_reliability_msgs/msg/pipeline_metrics.hpp"
@@ -30,6 +31,8 @@ public:
     metrics_qos_depth_ = declare_parameter<int>("metrics_qos_depth", 10);
     rate_window_seconds_ = declare_parameter<double>("rate_window_seconds", 5.0);
     latency_window_size_ = declare_parameter<int>("latency_window_size", 1000);
+    processing_delay_enabled_ = declare_parameter<bool>("processing_delay_enabled", false);
+    processing_delay_ms_ = declare_parameter<double>("processing_delay_ms", 0.0);
 
     normalize_parameters();
     accumulator_.configure(expected_hz_, rate_window_seconds_, latency_window_size_);
@@ -57,7 +60,8 @@ public:
       "metrics_topic=%s metrics_type=edge_reliability_msgs/msg/PipelineMetrics expected_hz=%.3f "
       "metrics_publish_hz=%.3f sensor_qos_depth=%d sensor_qos_reliability=best_effort "
       "metrics_qos_depth=%d metrics_qos_reliability=reliable rate_window_seconds=%.3f "
-      "latency_window_size=%d latency_warn_ms=%.3f latency_unhealthy_ms=%.3f",
+      "latency_window_size=%d latency_warn_ms=%.3f latency_unhealthy_ms=%.3f "
+      "processing_delay_enabled=%s processing_delay_ms=%.3f",
       sensor_topic_.c_str(),
       metrics_topic_.c_str(),
       expected_hz_,
@@ -67,7 +71,9 @@ public:
       rate_window_seconds_,
       latency_window_size_,
       latency_warn_ms_,
-      latency_unhealthy_ms_);
+      latency_unhealthy_ms_,
+      processing_delay_enabled_ ? "true" : "false",
+      processing_delay_ms_);
   }
 
   ~SensorProcessor() override
@@ -153,6 +159,18 @@ private:
         latency_window_size_);
       latency_window_size_ = 1000;
     }
+
+    if (processing_delay_ms_ < 0.0) {
+      RCLCPP_WARN(
+        get_logger(),
+        "event=parameter_fallback parameter=processing_delay_ms value=%.3f fallback=0.0",
+        processing_delay_ms_);
+      processing_delay_ms_ = 0.0;
+    }
+
+    if (processing_delay_ms_ == 0.0) {
+      processing_delay_enabled_ = false;
+    }
   }
 
   static int64_t stamp_to_nanoseconds(const builtin_interfaces::msg::Time & stamp)
@@ -162,6 +180,20 @@ private:
 
   void on_sensor_sample(const edge_reliability_msgs::msg::SensorSample::SharedPtr message)
   {
+    if (processing_delay_enabled_ && processing_delay_ms_ > 0.0) {
+      if (!logged_first_processing_delay_) {
+        RCLCPP_INFO(
+          get_logger(),
+          "event=first_processing_delay processing_delay_ms=%.3f",
+          processing_delay_ms_);
+        logged_first_processing_delay_ = true;
+      }
+
+      const auto delay = std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::duration<double, std::milli>(processing_delay_ms_));
+      std::this_thread::sleep_for(delay);
+    }
+
     const auto receive_time = now();
     accumulator_.observe(
       message->sequence_id,
@@ -231,11 +263,14 @@ private:
   double latency_warn_ms_{20.0};
   double latency_unhealthy_ms_{50.0};
   double rate_window_seconds_{5.0};
+  double processing_delay_ms_{0.0};
   int sensor_qos_depth_{10};
   int metrics_qos_depth_{10};
   int latency_window_size_{1000};
+  bool processing_delay_enabled_{false};
   bool logged_first_receive_{false};
   bool logged_first_metrics_publish_{false};
+  bool logged_first_processing_delay_{false};
 };
 
 }  // namespace edge_reliability_processor
