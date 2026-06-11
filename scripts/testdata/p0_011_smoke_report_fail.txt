@@ -1,0 +1,23 @@
+P0-011_RESULT
+
+Build
+colcon exit status: 0
+  1 package had stderr output: edge_reliability_system
+
+Unit Tests
+colcon test exit status: 0
+
+System Metrics Topic
+system messages: 0
+memory used mb: 0
+memory total mb: 0
+temperature c: 0
+power w: 0
+source: unknown
+
+Raw tegrastats Logs
+raw tegrastats log lines: 0
+
+Verdict
+PASS/FAIL: FAIL
+Blocker if FAIL: no messages

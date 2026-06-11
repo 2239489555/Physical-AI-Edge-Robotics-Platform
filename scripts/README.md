@@ -64,3 +64,11 @@ Use `run_p0_010_health_monitor_smoke.sh` on Jetson to run normal, drop-fault, an
 Use `verify_p0_010_smoke_report.ps1` from Windows to check a returned P0-010 `runtime/results/p0_010_smoke_report.txt` before marking the issue complete.
 
 Use `verify_p0_010_completion_gate.ps1` from Windows after a returned P0-010 report exists to run both the static health-monitor gate and the returned-report gate.
+
+Use `verify_p0_011_system_metrics.ps1` from Windows to check that the P0-011 system metrics package covers tegrastats parsing, sample fixtures, `SystemMetrics` publication, project-local raw logs, smoke workflow, and documentation.
+
+Use `run_p0_011_system_metrics_smoke.sh` on Jetson to build and test `edge_reliability_system`, launch `system_metrics_node` in sample-file mode, verify `/edge/metrics/system`, save raw tegrastats lines under `runtime/logs/tegrastats/`, and report live `tegrastats` availability.
+
+Use `verify_p0_011_smoke_report.ps1` from Windows to check a returned P0-011 `runtime/results/p0_011_smoke_report.txt` before marking the issue complete.
+
+Use `verify_p0_011_completion_gate.ps1` from Windows after a returned P0-011 report exists to run both the static system-metrics gate and the returned-report gate.

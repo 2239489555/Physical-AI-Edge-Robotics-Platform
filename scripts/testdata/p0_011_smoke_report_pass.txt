@@ -1,0 +1,39 @@
+P0-011_RESULT
+
+Build
+colcon exit status: 0
+
+Unit Tests
+colcon test exit status: 0
+
+System Metrics Topic
+system metrics summary:
+system_messages: 6
+last_cpu_percent: 2.333
+last_memory_used_mb: 3300.000
+last_memory_total_mb: 62832.000
+last_gpu_percent: 14.000
+last_temperature_c: 42.000
+last_power_w: 6.190
+last_source: tegrastats_sample_file
+system messages: 6
+cpu percent: 2.333
+memory used mb: 3300.000
+memory total mb: 62832.000
+gpu percent: 14.000
+temperature c: 42.000
+power w: 6.190
+source: tegrastats_sample_file
+/edge/metrics/system
+edge_reliability_msgs/msg/SystemMetrics
+
+Raw tegrastats Logs
+raw tegrastats log path: /home/jetson/chengwei/runtime/logs/tegrastats/p0_011_system_metrics_raw.log
+raw tegrastats log lines: 6
+
+Live tegrastats Probe
+live tegrastats status: unavailable
+
+Verdict
+PASS/FAIL: PASS
+Blocker if FAIL: -

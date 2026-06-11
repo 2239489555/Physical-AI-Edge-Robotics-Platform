@@ -1,0 +1,11 @@
+system_metrics_node:
+  ros__parameters:
+    metrics_topic: /edge/metrics/system
+    frame_id: system_metrics_frame
+    input_mode: sample_file
+    sample_file: ""
+    live_command: "timeout 2s tegrastats --interval 1000"
+    publish_hz: 1.0
+    qos_depth: 10
+    raw_log_enabled: true
+    raw_log_path: ../runtime/logs/tegrastats/system_metrics_node_raw.log

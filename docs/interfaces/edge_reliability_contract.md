@@ -165,6 +165,12 @@ Recommended P0 parameters:
 | `health_monitor` | `max_p95_latency_ms_unhealthy` | `20.0` | Unhealthy p95 latency threshold for P0-010 |
 | `health_monitor` | `max_p99_latency_ms_warning` | `10.0` | Warning p99 latency threshold for P0-010 |
 | `health_monitor` | `max_p99_latency_ms_unhealthy` | `50.0` | Unhealthy p99 latency threshold for P0-010 |
+| `system_metrics_node` | `metrics_topic` | `/edge/metrics/system` | P0-011 output `SystemMetrics` topic |
+| `system_metrics_node` | `input_mode` | `sample_file` | `sample_file` for deterministic smoke or `live_command` for bounded live tegrastats |
+| `system_metrics_node` | `sample_file` | package testdata sample | Saved tegrastats lines used by parser tests and smoke tests |
+| `system_metrics_node` | `live_command` | `timeout 2s tegrastats --interval 1000` | Bounded live tegrastats command |
+| `system_metrics_node` | `raw_log_enabled` | `true` | Whether to append raw tegrastats lines under project-local logs |
+| `system_metrics_node` | `raw_log_path` | `runtime/logs/tegrastats/...` | Project-local raw tegrastats log destination |
 
 ## Logs
 
@@ -197,6 +203,16 @@ P0-010 `edge_reliability_health` rule mapping:
 - subscriber-delay metrics should publish `WARNING` or `UNHEALTHY` with a p95 latency rule;
 - `HealthState.reason` must summarize the highest active severity;
 - `HealthState.active_rules` must include machine-readable rule names.
+
+P0-011 `edge_reliability_system` mapping:
+
+- `system_metrics_node` publishes `/edge/metrics/system` as `edge_reliability_msgs/msg/SystemMetrics`;
+- parser input is Jetson `tegrastats` text, either from `sample_file` or a bounded `live_command`;
+- `cpu_percent` is the average of per-core CPU percentages from the `CPU [...]` block;
+- `gpu_percent` comes from `GR3D_FREQ` when present;
+- `temperature_c` is the highest nonnegative temperature token;
+- `power_w` is the sum of current `VDD_*` and `VIN_*` rail values converted from mW to watts;
+- raw tegrastats input must stay under project-local `runtime/logs/tegrastats`.
 
 ## QoS
 

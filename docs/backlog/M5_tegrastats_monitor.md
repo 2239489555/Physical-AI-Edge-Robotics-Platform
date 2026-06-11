@@ -23,6 +23,13 @@ Jetson-specific observability is central to edge robotics work. tegrastats is th
 - Interface contract.
 - Test report.
 
+## Current Progress
+
+- P0-011 implementation is prepared for Jetson verification.
+- `ros2_ws/src/edge_reliability_system` adds `system_metrics_node`, `tegrastats_parser.hpp`, parser unit tests, representative sample data, and `/edge/metrics/system` publication.
+- The P0-011 smoke uses `sample_file` mode by default so parser and ROS topic behavior can be verified even when live `tegrastats` is unavailable.
+- Raw sample input is written under `runtime/logs/tegrastats`.
+
 ## Technical Constraints
 
 - Core runtime node uses C++17 and rclcpp unless parsing constraints justify a helper script.
