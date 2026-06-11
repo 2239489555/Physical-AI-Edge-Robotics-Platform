@@ -11,7 +11,10 @@ namespace
 
 using edge_reliability_health::HealthThresholds;
 using edge_reliability_health::PipelineHealthInput;
+using edge_reliability_health::SystemHealthInput;
+using edge_reliability_health::combine_health_evaluations;
 using edge_reliability_health::evaluate_pipeline_health;
+using edge_reliability_health::evaluate_system_health;
 
 bool has_rule(const std::vector<std::string> & rules, const std::string & rule)
 {
@@ -91,6 +94,61 @@ TEST(HealthRules, MarksLowReceiveRateWarning)
 
   EXPECT_EQ(evaluation.state, edge_reliability_health::health_state::WARNING);
   EXPECT_TRUE(has_rule(evaluation.active_rules, "receive_rate_warning"));
+}
+
+TEST(HealthRules, MarksSystemTemperatureUnhealthy)
+{
+  SystemHealthInput input;
+  input.available = true;
+  input.cpu_percent = 12.0;
+  input.memory_used_mb = 4096.0;
+  input.memory_total_mb = 65536.0;
+  input.disk_used_percent = 55.0;
+  input.gpu_percent = 18.0;
+  input.temperature_c = 89.0;
+  input.power_w = 9.0;
+
+  const auto evaluation = evaluate_system_health(input, HealthThresholds{});
+
+  EXPECT_EQ(evaluation.state, edge_reliability_health::health_state::UNHEALTHY);
+  EXPECT_TRUE(has_rule(evaluation.active_rules, "system_temperature_unhealthy"));
+  EXPECT_NE(evaluation.reason.find("system_temperature_unhealthy"), std::string::npos);
+}
+
+TEST(HealthRules, MarksSystemMemoryAndDiskWarning)
+{
+  SystemHealthInput input;
+  input.available = true;
+  input.cpu_percent = 12.0;
+  input.memory_used_mb = 54.0;
+  input.memory_total_mb = 64.0;
+  input.disk_used_percent = 82.0;
+  input.gpu_percent = 18.0;
+  input.temperature_c = 42.0;
+  input.power_w = 9.0;
+
+  const auto evaluation = evaluate_system_health(input, HealthThresholds{});
+
+  EXPECT_EQ(evaluation.state, edge_reliability_health::health_state::WARNING);
+  EXPECT_TRUE(has_rule(evaluation.active_rules, "system_memory_warning"));
+  EXPECT_TRUE(has_rule(evaluation.active_rules, "system_disk_warning"));
+}
+
+TEST(HealthRules, CombinesPipelineAndSystemRules)
+{
+  const auto pipeline = evaluate_pipeline_health(healthy_input(), HealthThresholds{});
+
+  SystemHealthInput system_input;
+  system_input.available = true;
+  system_input.memory_used_mb = 100.0;
+  system_input.memory_total_mb = 100.0;
+  const auto system = evaluate_system_health(system_input, HealthThresholds{});
+
+  const auto combined = combine_health_evaluations(pipeline, true, system, true);
+
+  EXPECT_EQ(combined.state, edge_reliability_health::health_state::UNHEALTHY);
+  EXPECT_TRUE(has_rule(combined.active_rules, "system_memory_unhealthy"));
+  EXPECT_NE(combined.reason.find("system_memory_unhealthy"), std::string::npos);
 }
 
 }  // namespace

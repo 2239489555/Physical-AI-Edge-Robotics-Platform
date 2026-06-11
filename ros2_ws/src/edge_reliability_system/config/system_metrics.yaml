@@ -9,3 +9,4 @@ system_metrics_node:
     qos_depth: 10
     raw_log_enabled: true
     raw_log_path: ../runtime/logs/tegrastats/system_metrics_node_raw.log
+    disk_path: /

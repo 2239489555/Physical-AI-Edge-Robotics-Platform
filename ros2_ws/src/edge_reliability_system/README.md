@@ -20,10 +20,15 @@ The parser maps tegrastats into `SystemMetrics`:
 - `cpu_percent`: average of per-core CPU utilization values in the `CPU [...]` block.
 - `memory_used_mb`: used RAM from `RAM used/totalMB`.
 - `memory_total_mb`: total RAM from `RAM used/totalMB`.
+- `disk_used_mb`: disk used MiB for `disk_path`, collected through the filesystem.
+- `disk_total_mb`: disk capacity MiB for `disk_path`, collected through the filesystem.
+- `disk_used_percent`: disk used percent for `disk_path`, collected through the filesystem.
 - `gpu_percent`: `GR3D_FREQ` percentage when present.
 - `temperature_c`: highest nonnegative temperature token.
 - `power_w`: sum of current mW values from `VDD_*` and `VIN_*` power rails, converted to watts.
 - `source`: `tegrastats_sample_file` or `tegrastats_live_command`.
+
+`disk_path` defaults to `/` and can be overridden in `system_metrics.yaml` or the launch argument when the project workspace lives on a separate mount.
 
 ## Run
 

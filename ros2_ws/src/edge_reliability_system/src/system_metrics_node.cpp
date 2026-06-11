@@ -1,4 +1,5 @@
 #include <array>
+#include <algorithm>
 #include <chrono>
 #include <cstdio>
 #include <filesystem>
@@ -32,6 +33,7 @@ public:
     raw_log_path_ = declare_parameter<std::string>(
       "raw_log_path",
       "../runtime/logs/tegrastats/system_metrics_node_raw.log");
+    disk_path_ = declare_parameter<std::string>("disk_path", "/");
 
     normalize_parameters();
     load_sample_lines();
@@ -49,7 +51,8 @@ public:
       get_logger(),
       "event=startup node=system_metrics_node topic=%s "
       "type=edge_reliability_msgs/msg/SystemMetrics input_mode=%s sample_file=%s "
-      "live_command=%s publish_hz=%.3f qos_depth=%d raw_log_enabled=%s raw_log_path=%s",
+      "live_command=%s publish_hz=%.3f qos_depth=%d raw_log_enabled=%s raw_log_path=%s "
+      "disk_path=%s",
       metrics_topic_.c_str(),
       input_mode_.c_str(),
       sample_file_.empty() ? "(empty)" : sample_file_.c_str(),
@@ -57,7 +60,8 @@ public:
       publish_hz_,
       qos_depth_,
       raw_log_enabled_ ? "true" : "false",
-      raw_log_path_.c_str());
+      raw_log_path_.c_str(),
+      disk_path_.c_str());
   }
 
   ~SystemMetricsNode() override
@@ -231,6 +235,7 @@ private:
     message.cpu_percent = parsed->cpu_percent;
     message.memory_used_mb = parsed->ram_used_mb;
     message.memory_total_mb = parsed->ram_total_mb;
+    populate_disk_metrics(message);
     message.gpu_percent = parsed->gpu_percent;
     message.temperature_c = parsed->temperature_c;
     message.power_w = parsed->power_w;
@@ -243,15 +248,46 @@ private:
       RCLCPP_INFO(
         get_logger(),
         "event=first_publish cpu_percent=%.3f memory_used_mb=%.3f memory_total_mb=%.3f "
+        "disk_used_mb=%.3f disk_total_mb=%.3f disk_used_percent=%.3f "
         "gpu_percent=%.3f temperature_c=%.3f power_w=%.3f source=%s",
         message.cpu_percent,
         message.memory_used_mb,
         message.memory_total_mb,
+        message.disk_used_mb,
+        message.disk_total_mb,
+        message.disk_used_percent,
         message.gpu_percent,
         message.temperature_c,
         message.power_w,
         message.source.c_str());
       logged_first_publish_ = true;
+    }
+  }
+
+  void populate_disk_metrics(edge_reliability_msgs::msg::SystemMetrics & message)
+  {
+    try {
+      const auto space = std::filesystem::space(disk_path_);
+      if (space.capacity == 0U) {
+        return;
+      }
+
+      constexpr double bytes_per_mib = 1024.0 * 1024.0;
+      const auto capacity = static_cast<double>(space.capacity);
+      const auto available = static_cast<double>(space.available);
+      const auto used = std::max(0.0, capacity - available);
+      message.disk_total_mb = capacity / bytes_per_mib;
+      message.disk_used_mb = used / bytes_per_mib;
+      message.disk_used_percent = used * 100.0 / capacity;
+    } catch (const std::filesystem::filesystem_error & error) {
+      if (!logged_disk_error_) {
+        RCLCPP_WARN(
+          get_logger(),
+          "event=disk_metrics_unavailable path=%s error=%s",
+          disk_path_.c_str(),
+          error.what());
+        logged_disk_error_ = true;
+      }
     }
   }
 
@@ -264,6 +300,7 @@ private:
   std::string sample_file_{};
   std::string live_command_{"timeout 2s tegrastats --interval 1000"};
   std::string raw_log_path_{"../runtime/logs/tegrastats/system_metrics_node_raw.log"};
+  std::string disk_path_{"/"};
   double publish_hz_{1.0};
   int qos_depth_{10};
   size_t sample_index_{0};
@@ -271,6 +308,7 @@ private:
   bool raw_log_enabled_{true};
   bool logged_empty_input_{false};
   bool logged_first_publish_{false};
+  bool logged_disk_error_{false};
 };
 
 }  // namespace edge_reliability_system

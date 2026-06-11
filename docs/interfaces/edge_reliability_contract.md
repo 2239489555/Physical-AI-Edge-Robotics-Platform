@@ -1,6 +1,6 @@
 # Edge Reliability Interface Contract
 
-Status: P0 stable contract, P0-006 through P0-011 Jetson verified
+Status: P0 stable contract, P0-006 through P0-011 Jetson verified, P0-012 implementation prepared
 
 This document defines the ROS 2 interfaces for the Edge Robotics Reliability Lab. It is the implementation boundary for fake inputs, replayed bags, and future hardware adapters.
 
@@ -27,7 +27,7 @@ Message types:
 | --- | --- | --- | --- | --- | --- |
 | `/edge/sensors/fake_primary` | `edge_reliability_msgs/msg/SensorSample` | `fake_sensor_adapter` | `sensor_processor`, rosbag | Sensor data QoS, keep last 10, best effort acceptable for high-rate streams | Primary fake sensor stream for P0 |
 | `/edge/metrics/pipeline` | `edge_reliability_msgs/msg/PipelineMetrics` | `sensor_processor` for P0-007 | `health_monitor`, dashboards, rosbag | Reliable, keep last 10 | Rate, latency, drop, and sequence metrics |
-| `/edge/metrics/system` | `edge_reliability_msgs/msg/SystemMetrics` | `system_metrics_node` | `health_monitor`, dashboards, rosbag | Reliable, keep last 10 | Jetson CPU, memory, GPU, temperature, and power metrics |
+| `/edge/metrics/system` | `edge_reliability_msgs/msg/SystemMetrics` | `system_metrics_node` | `health_monitor`, dashboards, rosbag | Reliable, keep last 10 | Jetson CPU, memory, disk, GPU, temperature, and power metrics |
 | `/edge/health/state` | `edge_reliability_msgs/msg/HealthState` | `health_monitor` | dashboards, runtime scripts, rosbag | Reliable, transient local optional, keep last 1 | Coarse health state and active rule reasons |
 
 The existing P0-003 tracer topic `/edge/tracer` is a bootstrap topic only. New pipeline tasks should use the contracts above.
@@ -82,6 +82,9 @@ Required semantics:
 - `cpu_percent`: CPU utilization percentage.
 - `memory_used_mb`: memory used in MiB.
 - `memory_total_mb`: total memory in MiB.
+- `disk_used_mb`: disk space used in MiB for the configured `disk_path`.
+- `disk_total_mb`: disk capacity in MiB for the configured `disk_path`.
+- `disk_used_percent`: disk space used percentage for the configured `disk_path`.
 - `gpu_percent`: GPU utilization percentage when available.
 - `temperature_c`: primary thermal reading in Celsius.
 - `power_w`: power draw in watts when available.
@@ -156,6 +159,7 @@ Recommended P0 parameters:
 | `sensor_processor` | `processing_delay_enabled` | `false` | P0-009 subscriber delay injection switch |
 | `sensor_processor` | `processing_delay_ms` | `0.0` | P0-009 per-sample delay used to increase `p95_latency_ms` and `p99_latency_ms` |
 | `health_monitor` | `metrics_topic` | `/edge/metrics/pipeline` | P0-010 input `PipelineMetrics` topic |
+| `health_monitor` | `system_metrics_topic` | `/edge/metrics/system` | P0-012 input `SystemMetrics` topic |
 | `health_monitor` | `health_topic` | `/edge/health/state` | P0-010 output `HealthState` topic |
 | `health_monitor` | `min_receive_rate_hz_warning` | `95.0` | Warning floor for receive rate |
 | `health_monitor` | `min_receive_rate_hz_unhealthy` | `80.0` | Unhealthy floor for receive rate |
@@ -165,12 +169,25 @@ Recommended P0 parameters:
 | `health_monitor` | `max_p95_latency_ms_unhealthy` | `20.0` | Unhealthy p95 latency threshold for P0-010 |
 | `health_monitor` | `max_p99_latency_ms_warning` | `10.0` | Warning p99 latency threshold for P0-010 |
 | `health_monitor` | `max_p99_latency_ms_unhealthy` | `50.0` | Unhealthy p99 latency threshold for P0-010 |
+| `health_monitor` | `max_cpu_percent_warning` | `85.0` | P0-012 warning CPU utilization percent |
+| `health_monitor` | `max_cpu_percent_unhealthy` | `95.0` | P0-012 unhealthy CPU utilization percent |
+| `health_monitor` | `max_memory_used_percent_warning` | `80.0` | P0-012 warning RAM used percent |
+| `health_monitor` | `max_memory_used_percent_unhealthy` | `95.0` | P0-012 unhealthy RAM used percent |
+| `health_monitor` | `max_disk_used_percent_warning` | `80.0` | P0-012 warning disk used percent |
+| `health_monitor` | `max_disk_used_percent_unhealthy` | `95.0` | P0-012 unhealthy disk used percent |
+| `health_monitor` | `max_gpu_percent_warning` | `90.0` | P0-012 warning GR3D/GPU utilization percent |
+| `health_monitor` | `max_gpu_percent_unhealthy` | `98.0` | P0-012 unhealthy GR3D/GPU utilization percent |
+| `health_monitor` | `max_temperature_c_warning` | `75.0` | P0-012 warning Jetson temperature in Celsius |
+| `health_monitor` | `max_temperature_c_unhealthy` | `85.0` | P0-012 unhealthy Jetson temperature in Celsius |
+| `health_monitor` | `max_power_w_warning` | `45.0` | P0-012 warning Jetson power draw in watts |
+| `health_monitor` | `max_power_w_unhealthy` | `60.0` | P0-012 unhealthy Jetson power draw in watts |
 | `system_metrics_node` | `metrics_topic` | `/edge/metrics/system` | P0-011 output `SystemMetrics` topic |
 | `system_metrics_node` | `input_mode` | `sample_file` | `sample_file` for deterministic smoke or `live_command` for bounded live tegrastats |
 | `system_metrics_node` | `sample_file` | package testdata sample | Saved tegrastats lines used by parser tests and smoke tests |
 | `system_metrics_node` | `live_command` | `timeout 2s tegrastats --interval 1000` | Bounded live tegrastats command |
 | `system_metrics_node` | `raw_log_enabled` | `true` | Whether to append raw tegrastats lines under project-local logs |
 | `system_metrics_node` | `raw_log_path` | `runtime/logs/tegrastats/...` | Project-local raw tegrastats log destination |
+| `system_metrics_node` | `disk_path` | `/` | P0-012 filesystem path used for disk metrics |
 
 ## Logs
 
@@ -213,6 +230,17 @@ P0-011 `edge_reliability_system` mapping:
 - `temperature_c` is the highest nonnegative temperature token;
 - `power_w` is the sum of current `VDD_*` and `VIN_*` rail values converted from mW to watts;
 - raw tegrastats input must stay under project-local `runtime/logs/tegrastats`.
+
+P0-012 `health_monitor` system mapping:
+
+- CPU percent over `max_cpu_percent_warning` or `max_cpu_percent_unhealthy` produces `system_cpu_warning` or `system_cpu_unhealthy`;
+- RAM used percent over `max_memory_used_percent_warning` or `max_memory_used_percent_unhealthy` produces `system_memory_warning` or `system_memory_unhealthy`;
+- disk used percent over `max_disk_used_percent_warning` or `max_disk_used_percent_unhealthy` produces `system_disk_warning` or `system_disk_unhealthy`;
+- GPU percent over `max_gpu_percent_warning` or `max_gpu_percent_unhealthy` produces `system_gpu_warning` or `system_gpu_unhealthy`;
+- temperature in Celsius over `max_temperature_c_warning` or `max_temperature_c_unhealthy` produces `system_temperature_warning` or `system_temperature_unhealthy`;
+- power in watts over `max_power_w_warning` or `max_power_w_unhealthy` produces `system_power_warning` or `system_power_unhealthy`;
+- `HealthState.state` uses the highest severity across pipeline and system rules;
+- `HealthState.active_rules` includes both pipeline and system rule names when both are active.
 
 ## QoS
 
@@ -301,6 +329,7 @@ Verified on Jetson:
 - P0-009 fault injection completed with `SMOKE_EXIT_STATUS=0`: normal `drop_rate` was 0.000000, drop-fault `drop_rate` reached 0.192000 with 288 sequence-gap drops, subscriber delay increased p95 latency from 0.580ms to 8.436ms, and fault bags were recorded under `runtime/bags/p0-009`.
 - P0-010 health monitor completed with `SMOKE_EXIT_STATUS=0`: normal metrics produced `HEALTHY`, drop fault produced `UNHEALTHY`, subscriber delay produced `WARNING`, and the final warning-clean rerun had no package stderr output.
 - P0-011 system metrics completed with `SMOKE_EXIT_STATUS=0`: `/edge/metrics/system` published `SystemMetrics` from `system_metrics_node`, sample-file metrics included CPU, RAM, GR3D, temperature, power, and `source: tegrastats_sample_file`, raw logs were written under `runtime/logs/tegrastats`, and live `tegrastats` was available.
+- P0-012 implementation is prepared for Jetson verification: `health_monitor` subscribes to `/edge/metrics/system`, system thresholds are YAML-configurable, and `scripts/run_p0_012_system_health_smoke.sh` verifies default healthy behavior plus a system threshold crossing.
 
 Re-run commands:
 

@@ -72,3 +72,11 @@ Use `run_p0_011_system_metrics_smoke.sh` on Jetson to build and test `edge_relia
 Use `verify_p0_011_smoke_report.ps1` from Windows to check a returned P0-011 `runtime/results/p0_011_smoke_report.txt` before marking the issue complete.
 
 Use `verify_p0_011_completion_gate.ps1` from Windows after a returned P0-011 report exists to run both the static system-metrics gate and the returned-report gate.
+
+Use `verify_p0_012_system_health.ps1` from Windows to check that P0-012 integrates `/edge/metrics/system` into `health_monitor`, adds YAML-configurable system thresholds, covers disk metrics, documents rule names and units, and provides a Jetson smoke workflow.
+
+Use `run_p0_012_system_health_smoke.sh` on Jetson to build and test the pipeline, system metrics node, and health monitor, then run default healthy and system-pressure scenarios through `/edge/health/state`.
+
+Use `verify_p0_012_smoke_report.ps1` from Windows to check a returned P0-012 `runtime/results/p0_012_smoke_report.txt` before marking the issue complete.
+
+Use `verify_p0_012_completion_gate.ps1` from Windows after a returned P0-012 report exists to run both the static system-health gate and the returned-report gate.

@@ -9,6 +9,7 @@ def generate_launch_description():
     config_file = LaunchConfiguration("config_file")
     sample_file = LaunchConfiguration("sample_file")
     raw_log_path = LaunchConfiguration("raw_log_path")
+    disk_path = LaunchConfiguration("disk_path")
 
     return LaunchDescription(
         [
@@ -39,6 +40,11 @@ def generate_launch_description():
                 default_value="../runtime/logs/tegrastats/system_metrics_node_raw.log",
                 description="Project-local raw tegrastats log path",
             ),
+            DeclareLaunchArgument(
+                "disk_path",
+                default_value="/",
+                description="Filesystem path used for disk usage metrics",
+            ),
             Node(
                 package="edge_reliability_system",
                 executable="system_metrics_node",
@@ -49,6 +55,7 @@ def generate_launch_description():
                     {
                         "sample_file": sample_file,
                         "raw_log_path": raw_log_path,
+                        "disk_path": disk_path,
                     },
                 ],
             ),

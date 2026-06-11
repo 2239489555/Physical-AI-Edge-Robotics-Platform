@@ -1,0 +1,105 @@
+P0-012_RESULT
+
+Build
+colcon exit status: 0
+build summary:
+Starting >>> edge_reliability_msgs
+Finished <<< edge_reliability_msgs [0.75s]
+Starting >>> edge_reliability_fake_sensor
+Finished <<< edge_reliability_fake_sensor [0.23s]
+Starting >>> edge_reliability_processor
+Finished <<< edge_reliability_processor [0.26s]
+Starting >>> edge_reliability_system
+Finished <<< edge_reliability_system [12.6s]
+Starting >>> edge_reliability_health
+Finished <<< edge_reliability_health [13.5s]
+Summary: 5 packages finished [28.0s]
+
+Unit Tests
+colcon test exit status: 0
+health test-result tail:
+Summary: 8 tests, 0 errors, 0 failures, 0 skipped
+system test-result tail:
+Summary: 4 tests, 0 errors, 0 failures, 0 skipped
+
+Topic Evidence
+topic list:
+/edge/health/state [edge_reliability_msgs/msg/HealthState]
+/edge/metrics/pipeline [edge_reliability_msgs/msg/PipelineMetrics]
+/edge/metrics/system [edge_reliability_msgs/msg/SystemMetrics]
+health topic info:
+Type: edge_reliability_msgs/msg/HealthState
+system topic info:
+Type: edge_reliability_msgs/msg/SystemMetrics
+
+Normal System Health
+normal system metrics summary:
+system_messages: 6
+last_cpu_percent: 2.500
+last_memory_used_mb: 3300.000
+last_memory_total_mb: 62832.000
+last_disk_used_mb: 102400.000
+last_disk_total_mb: 786432.000
+last_disk_used_percent: 13.021
+last_gpu_percent: 14.000
+last_temperature_c: 42.000
+last_power_w: 6.190
+last_source: tegrastats_sample_file
+normal health summary:
+health_messages: 8
+last_state_code: 0
+last_state_name: HEALTHY
+last_reason: healthy: pipeline and system metrics within thresholds
+last_active_rules:
+normal state: HEALTHY
+normal reason: healthy: pipeline and system metrics within thresholds
+normal active rules: none
+normal system messages: 6
+normal disk used percent: 13.021
+
+System Pressure Health
+system pressure system metrics summary:
+system_messages: 6
+last_cpu_percent: 2.500
+last_memory_used_mb: 3300.000
+last_memory_total_mb: 62832.000
+last_disk_used_mb: 102400.000
+last_disk_total_mb: 786432.000
+last_disk_used_percent: 13.021
+last_gpu_percent: 14.000
+last_temperature_c: 42.000
+last_power_w: 6.190
+last_source: tegrastats_sample_file
+system pressure health summary:
+health_messages: 8
+last_state_code: 2
+last_state_name: UNHEALTHY
+last_reason: unhealthy: system_temperature_unhealthy,system_power_unhealthy
+last_active_rules: system_temperature_unhealthy,system_power_unhealthy
+system pressure state: UNHEALTHY
+system pressure reason: unhealthy: system_temperature_unhealthy,system_power_unhealthy
+system pressure active rules: system_temperature_unhealthy,system_power_unhealthy
+system pressure system messages: 6
+system pressure disk used percent: 13.021
+
+Comparison
+health topic: /edge/health/state
+health type: edge_reliability_msgs/msg/HealthState
+pipeline topic: /edge/metrics/pipeline
+pipeline type: edge_reliability_msgs/msg/PipelineMetrics
+system topic: /edge/metrics/system
+system type: edge_reliability_msgs/msg/SystemMetrics
+normal state: HEALTHY
+system pressure state: UNHEALTHY
+required: normal HEALTHY; system pressure UNHEALTHY with system_* active rules
+
+Git / Runtime Hygiene
+git status:
+!! ros2_ws/build/
+!! ros2_ws/install/
+!! ros2_ws/log/
+!! runtime/
+
+Verdict
+PASS/FAIL: PASS
+Blocker if FAIL: -

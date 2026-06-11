@@ -4,6 +4,9 @@ std_msgs/Header header
 float64 cpu_percent
 float64 memory_used_mb
 float64 memory_total_mb
+float64 disk_used_mb
+float64 disk_total_mb
+float64 disk_used_percent
 float64 gpu_percent
 float64 temperature_c
 float64 power_w

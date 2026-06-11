@@ -1,0 +1,21 @@
+P0-012_RESULT
+
+Build
+colcon exit status: 0
+
+Unit Tests
+colcon test exit status: 0
+
+Normal System Health
+normal state: HEALTHY
+normal disk used percent: 13.021
+
+System Pressure Health
+system pressure state: HEALTHY
+system pressure active rules:
+system pressure system messages: 6
+system pressure disk used percent: 13.021
+
+Verdict
+PASS/FAIL: FAIL
+Blocker if FAIL: system pressure scenario did not become UNHEALTHY
