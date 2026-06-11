@@ -44,6 +44,7 @@ foreach ($text in @(
 }
 
 Assert-NotContains "PASS/FAIL: FAIL"
+Assert-NotContains "package had stderr output"
 
 $delayMatch = [regex]::Match($report, "delay fault state:\s+(WARNING|UNHEALTHY)")
 if (-not $delayMatch.Success) {

@@ -262,7 +262,12 @@ PY
 summary_value() {
   local key="$1"
   local file="$2"
-  awk -F': ' -v key="$key" '$1 == key { value = $2 } END { print value }' "$file"
+  awk -v key="$key" '
+    index($0, key ": ") == 1 {
+      value = substr($0, length(key) + 3)
+    }
+    END { print value }
+  ' "$file"
 }
 
 launch_and_check() {
@@ -346,7 +351,7 @@ write_report() {
     print_head "$NORMAL_SUMMARY"
     echo "normal state: ${NORMAL_STATE:-unknown}"
     echo "normal reason: ${NORMAL_REASON:-unknown}"
-    echo "normal active rules: ${NORMAL_RULES:-unknown}"
+    echo "normal active rules: ${NORMAL_RULES:-none}"
     echo
     echo "Drop Fault Health"
     echo "drop fault health summary:"

@@ -211,6 +211,7 @@ foreach ($text in @(
     "drop fault state: UNHEALTHY",
     "drop_rate_unhealthy",
     "p95_latency_",
+    "package had stderr output",
     "P0-010 smoke report checks passed"
 )) {
     Assert-Contains "scripts/verify_p0_010_smoke_report.ps1" $smokeReportVerifier $text

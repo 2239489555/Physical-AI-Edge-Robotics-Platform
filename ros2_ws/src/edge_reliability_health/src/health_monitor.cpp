@@ -42,8 +42,8 @@ public:
     if (min_expected_count < 0) {
       RCLCPP_WARN(
         get_logger(),
-        "event=parameter_fallback parameter=min_expected_count value=%d fallback=10",
-        min_expected_count);
+        "event=parameter_fallback parameter=min_expected_count value=%ld fallback=10",
+        static_cast<long>(min_expected_count));
       thresholds_.min_expected_count = 10;
     } else {
       thresholds_.min_expected_count = static_cast<uint64_t>(min_expected_count);
