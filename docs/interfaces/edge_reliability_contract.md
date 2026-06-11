@@ -1,6 +1,6 @@
 # Edge Reliability Interface Contract
 
-Status: P0 stable contract, P0-006 through P0-009 Jetson verified
+Status: P0 stable contract, P0-006 through P0-010 Jetson verified
 
 This document defines the ROS 2 interfaces for the Edge Robotics Reliability Lab. It is the implementation boundary for fake inputs, replayed bags, and future hardware adapters.
 
@@ -283,6 +283,7 @@ Verified on Jetson:
 - P0-007 processor smoke completed with `SMOKE_EXIT_STATUS=0`: `/edge/metrics/pipeline` published `PipelineMetrics` from `sensor_processor`, sensor rate measured 100.003Hz, metrics rate measured 1.000Hz, and rosbag recorded both `/edge/sensors/fake_primary` and `/edge/metrics/pipeline`.
 - P0-008 normal replay completed with `SMOKE_EXIT_STATUS=0`: a raw sensor bag under `runtime/bags/p0-008/normal_replay_20260611T023316Z` recorded 764 samples, replay drove `sensor_processor` to receive 763 samples, and replay metrics reported 99.989Hz, zero drops, and zero out-of-order samples.
 - P0-009 fault injection completed with `SMOKE_EXIT_STATUS=0`: normal `drop_rate` was 0.000000, drop-fault `drop_rate` reached 0.192000 with 288 sequence-gap drops, subscriber delay increased p95 latency from 0.580ms to 8.436ms, and fault bags were recorded under `runtime/bags/p0-009`.
+- P0-010 health monitor completed with `SMOKE_EXIT_STATUS=0`: normal metrics produced `HEALTHY`, drop fault produced `UNHEALTHY`, subscriber delay produced `WARNING`, and the final warning-clean rerun had no package stderr output.
 
 Re-run commands:
 
