@@ -46,7 +46,9 @@ bash scripts/run_p0_012_system_health_smoke.sh
 
 The smoke runs two scenarios:
 
-- default `health_monitor.yaml`, expected `HEALTHY`;
+- `health_monitor_system_nominal.yaml`, expected `HEALTHY`;
 - `health_monitor_system_pressure.yaml`, expected `UNHEALTHY` with `system_temperature_unhealthy` or `system_power_unhealthy`.
+
+The P0-012 smoke configs intentionally relax pipeline receive-rate and latency thresholds so this test isolates system-health behavior. P0-010 remains the strict pipeline health verification path.
 
 Outputs stay under `runtime/results/`, `runtime/logs/`, and `runtime/artifacts/preflight/`.

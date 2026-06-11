@@ -20,7 +20,7 @@ SYSTEM_TYPE="edge_reliability_msgs/msg/SystemMetrics"
 
 FAKE_CONFIG="$REPO_ROOT/ros2_ws/src/edge_reliability_fake_sensor/config/fake_sensor.yaml"
 PROCESSOR_CONFIG="$REPO_ROOT/ros2_ws/src/edge_reliability_processor/config/processor.yaml"
-HEALTH_CONFIG="$REPO_ROOT/ros2_ws/src/edge_reliability_health/config/health_monitor.yaml"
+HEALTH_CONFIG="$REPO_ROOT/ros2_ws/src/edge_reliability_health/config/health_monitor_system_nominal.yaml"
 PRESSURE_HEALTH_CONFIG="$REPO_ROOT/ros2_ws/src/edge_reliability_health/config/health_monitor_system_pressure.yaml"
 SYSTEM_SAMPLE_FILE="$REPO_ROOT/ros2_ws/src/edge_reliability_system/testdata/tegrastats_samples.txt"
 

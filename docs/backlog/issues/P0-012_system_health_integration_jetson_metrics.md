@@ -29,6 +29,7 @@ Extend health monitoring so Jetson CPU, RAM, disk, temperature, and GPU-related 
 - `system_metrics_node` samples disk usage through the configured `disk_path` while keeping tegrastats as the source for CPU, RAM, GPU, temperature, and power.
 - `health_monitor` subscribes to `/edge/metrics/pipeline` and `/edge/metrics/system`, combines the latest rule evaluations, and publishes the highest severity on `/edge/health/state`.
 - Default system thresholds live in `ros2_ws/src/edge_reliability_health/config/health_monitor.yaml`.
+- `ros2_ws/src/edge_reliability_health/config/health_monitor_system_nominal.yaml` relaxes pipeline thresholds for deterministic P0-012 system-health smoke verification.
 - `ros2_ws/src/edge_reliability_health/config/health_monitor_system_pressure.yaml` intentionally lowers temperature and power thresholds for deterministic P0-012 smoke verification.
 - `scripts/run_p0_012_system_health_smoke.sh` runs default healthy and system-pressure scenarios and writes the report to `runtime/results/p0_012_smoke_report.txt`.
 - Completion requires returned Jetson smoke evidence with `PASS/FAIL: PASS`.

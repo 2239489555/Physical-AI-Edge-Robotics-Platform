@@ -21,8 +21,8 @@ health_monitor:
     max_disk_used_percent_unhealthy: 95.0
     max_gpu_percent_warning: 90.0
     max_gpu_percent_unhealthy: 98.0
-    max_temperature_c_warning: 35.0
-    max_temperature_c_unhealthy: 40.0
-    max_power_w_warning: 3.0
-    max_power_w_unhealthy: 5.0
+    max_temperature_c_warning: 75.0
+    max_temperature_c_unhealthy: 85.0
+    max_power_w_warning: 45.0
+    max_power_w_unhealthy: 60.0
     min_expected_count: 10

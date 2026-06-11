@@ -27,6 +27,7 @@ $requiredFiles = @(
     @((Join-Path $healthDir "src/health_monitor.cpp"), "health monitor source"),
     @((Join-Path $healthDir "test/health_rules_test.cpp"), "health rules test"),
     @((Join-Path $healthDir "config/health_monitor.yaml"), "health monitor config"),
+    @((Join-Path $healthDir "config/health_monitor_system_nominal.yaml"), "system nominal health config"),
     @((Join-Path $healthDir "config/health_monitor_system_pressure.yaml"), "system pressure health config"),
     @((Join-Path $healthDir "package.xml"), "health package.xml"),
     @((Join-Path $healthDir "README.md"), "health README"),
@@ -87,6 +88,7 @@ $rulesHeader = Get-Content -Raw -LiteralPath (Join-Path $healthDir "include/edge
 $healthSource = Get-Content -Raw -LiteralPath (Join-Path $healthDir "src/health_monitor.cpp")
 $healthTest = Get-Content -Raw -LiteralPath (Join-Path $healthDir "test/health_rules_test.cpp")
 $healthConfig = Get-Content -Raw -LiteralPath (Join-Path $healthDir "config/health_monitor.yaml")
+$nominalConfig = Get-Content -Raw -LiteralPath (Join-Path $healthDir "config/health_monitor_system_nominal.yaml")
 $pressureConfig = Get-Content -Raw -LiteralPath (Join-Path $healthDir "config/health_monitor_system_pressure.yaml")
 $healthPackage = Get-Content -Raw -LiteralPath (Join-Path $healthDir "package.xml")
 $healthReadme = Get-Content -Raw -LiteralPath (Join-Path $healthDir "README.md")
@@ -179,6 +181,17 @@ foreach ($text in @(
 }
 
 foreach ($text in @(
+    "min_receive_rate_hz_warning: 1.0",
+    "max_p95_latency_ms_warning: 50.0",
+    "max_temperature_c_unhealthy: 85.0",
+    "max_power_w_unhealthy: 60.0"
+)) {
+    Assert-Contains "health_monitor_system_nominal.yaml" $nominalConfig $text
+}
+
+foreach ($text in @(
+    "min_receive_rate_hz_warning: 1.0",
+    "max_p95_latency_ms_warning: 50.0",
     "max_temperature_c_unhealthy: 40.0",
     "max_power_w_unhealthy: 5.0"
 )) {
@@ -211,6 +224,7 @@ foreach ($text in @(
     'SYSTEM_TOPIC="/edge/metrics/system"',
     "edge_reliability_system",
     "edge_reliability_health",
+    "health_monitor_system_nominal.yaml",
     "health_monitor_system_pressure.yaml",
     "capture_system_metrics_summary",
     "capture_health_summary",
@@ -258,7 +272,8 @@ foreach ($text in @(
     "/edge/health/state",
     "system_temperature_unhealthy",
     "system_disk_warning",
-    "health_monitor_system_pressure.yaml"
+    "health_monitor_system_pressure.yaml",
+    "health_monitor_system_nominal.yaml"
 )) {
     Assert-Contains "docs/runbooks/system_health_integration.md" $runbook $text
 }
@@ -275,6 +290,7 @@ foreach ($text in @(
 
 foreach ($text in @(
     "Implementation notes",
+    "health_monitor_system_nominal.yaml",
     "health_monitor_system_pressure.yaml",
     "scripts/run_p0_012_system_health_smoke.sh",
     "Completion requires returned Jetson smoke evidence"
