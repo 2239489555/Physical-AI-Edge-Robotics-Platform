@@ -102,6 +102,7 @@ foreach ($text in @(
     "qos mismatch scenario count: `$MISMATCH_SCENARIO_COUNT",
     "target_ratio",
     "rate_gap_hz",
+    'printf ''%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n''',
     "P0 Gate Separation",
     "Bottleneck Reading Guide",
     "QoS Mismatch",

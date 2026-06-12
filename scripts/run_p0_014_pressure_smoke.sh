@@ -512,7 +512,7 @@ append_csv_row() {
   rate_gap="$(awk -v hz="$hz" -v rate="$receive_rate" 'BEGIN { printf "%.3f", hz - rate }')"
   notes="$(pressure_note "$hz" "$receive_rate" "$drop_rate" "$p99_latency" "$scenario_kind")"
 
-  printf '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
+  printf '%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' \
     "$scenario" \
     "$scenario_kind" \
     "$hz" \
