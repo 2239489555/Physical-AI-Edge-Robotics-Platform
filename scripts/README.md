@@ -88,3 +88,11 @@ Use `run_p0_013_qos_experiment_smoke.sh` on Jetson to run the QoS experiment mat
 Use `verify_p0_013_smoke_report.ps1` from Windows to check a returned P0-013 `runtime/results/p0_013_smoke_report.txt` before marking the issue complete.
 
 Use `verify_p0_013_completion_gate.ps1` from Windows after a returned P0-013 report exists to run both the static QoS-experiment gate and the returned-report gate.
+
+Use `verify_p0_014_pressure_runs.ps1` from Windows to check that the P0-014 pressure runner covers 500Hz/1000Hz, BestEffort/Reliable, KeepLast depths, expected QoS mismatch, CSV/report outputs, runtime artifact hygiene, and documentation.
+
+Use `run_p0_014_pressure_smoke.sh` on Jetson to run the pressure matrix and write `runtime/results/qos/p0_014_pressure_results.csv` plus `runtime/results/qos/p0_014_pressure_report.md`. High-rate bags are not recorded by default.
+
+Use `verify_p0_014_smoke_report.ps1` from Windows to check a returned P0-014 `runtime/results/p0_014_smoke_report.txt` before marking the issue complete.
+
+Use `verify_p0_014_completion_gate.ps1` from Windows after a returned P0-014 report exists to run both the static pressure-run gate and the returned-report gate.

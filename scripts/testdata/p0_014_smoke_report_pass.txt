@@ -1,0 +1,75 @@
+P0-014_RESULT
+
+Build
+colcon exit status: 0
+build summary:
+Starting >>> edge_reliability_msgs
+Finished <<< edge_reliability_msgs [0.75s]
+Starting >>> edge_reliability_fake_sensor
+Finished <<< edge_reliability_fake_sensor [0.22s]
+Starting >>> edge_reliability_processor
+Finished <<< edge_reliability_processor [0.31s]
+Starting >>> edge_reliability_system
+Finished <<< edge_reliability_system [0.28s]
+Summary: 4 packages finished [1.66s]
+
+Unit Tests
+colcon test exit status: 0
+test-result tail:
+Summary: 3 tests, 0 errors, 0 failures, 0 skipped
+
+Pressure Matrix
+scenario count: 10
+pressure scenario count: 8
+qos mismatch scenario count: 2
+frequencies: 500,1000
+reliability profiles: best_effort,reliable
+keep_last depths: 10,50
+mismatch profile: publisher best_effort, subscriber reliable
+p0 high-frequency stability required: no
+sensor topic: /edge/sensors/fake_primary
+sensor type: edge_reliability_msgs/msg/SensorSample
+metrics topic: /edge/metrics/pipeline
+metrics type: edge_reliability_msgs/msg/PipelineMetrics
+system topic: /edge/metrics/system
+system type: edge_reliability_msgs/msg/SystemMetrics
+
+CSV Results
+csv path: /home/jetson/chengwei/runtime/results/qos/p0_014_pressure_results.csv
+csv header:
+scenario_name,scenario_kind,frequency_hz,sensor_qos_reliability,processor_qos_reliability,qos_depth,receive_rate_hz,target_ratio,rate_gap_hz,drop_rate,average_latency_ms,p95_latency_ms,p99_latency_ms,cpu_percent,memory_used_mb,memory_total_mb,temperature_c,metrics_messages,received_count,expected_count,dropped_count,notes
+csv preview:
+scenario_name,scenario_kind,frequency_hz,sensor_qos_reliability,processor_qos_reliability,qos_depth,receive_rate_hz,target_ratio,rate_gap_hz,drop_rate,average_latency_ms,p95_latency_ms,p99_latency_ms,cpu_percent,memory_used_mb,memory_total_mb,temperature_c,metrics_messages,received_count,expected_count,dropped_count,notes
+pressure_500hz_pub_best_effort_sub_best_effort_depth10,pressure,500,best_effort,best_effort,10,498.100,0.996,1.900,0.001000,0.300,0.700,1.200,10.000,3300.000,62832.000,42.000,7,3500,3504,4,pressure_observation;nonzero_drop_rate
+pressure_500hz_pub_best_effort_sub_best_effort_depth50,pressure,500,best_effort,best_effort,50,499.000,0.998,1.000,0.000000,0.250,0.600,0.900,10.000,3300.000,62832.000,42.000,7,3501,3501,0,pressure_observation
+pressure_500hz_pub_reliable_sub_reliable_depth10,pressure,500,reliable,reliable,10,500.100,1.000,-0.100,0.000000,0.220,0.500,0.800,10.000,3300.000,62832.000,42.000,7,3502,3502,0,pressure_observation
+pressure_500hz_pub_reliable_sub_reliable_depth50,pressure,500,reliable,reliable,50,500.000,1.000,0.000,0.000000,0.230,0.500,0.900,10.000,3300.000,62832.000,42.000,7,3503,3503,0,pressure_observation
+qos_mismatch_500hz_pub_best_effort_sub_reliable_depth10,qos_mismatch,500,best_effort,reliable,10,0.000,0.000,500.000,0.000000,0.000,0.000,0.000,10.000,3300.000,62832.000,42.000,7,0,0,0,expected_qos_mismatch_no_sensor_samples
+pressure_1000hz_pub_best_effort_sub_best_effort_depth10,pressure,1000,best_effort,best_effort,10,930.000,0.930,70.000,0.050000,1.000,2.000,30.000,12.000,3300.000,62832.000,43.000,7,6510,6850,340,pressure_observation;nonzero_drop_rate;p99_latency_pressure
+pressure_1000hz_pub_best_effort_sub_best_effort_depth50,pressure,1000,best_effort,best_effort,50,950.000,0.950,50.000,0.020000,1.000,2.000,25.000,12.000,3300.000,62832.000,43.000,7,6650,6786,136,pressure_observation;nonzero_drop_rate;p99_latency_pressure
+pressure_1000hz_pub_reliable_sub_reliable_depth10,pressure,1000,reliable,reliable,10,999.000,0.999,1.000,0.000000,0.400,0.900,1.500,12.000,3300.000,62832.000,43.000,7,7000,7000,0,pressure_observation
+pressure_1000hz_pub_reliable_sub_reliable_depth50,pressure,1000,reliable,reliable,50,1000.100,1.000,-0.100,0.000000,0.400,0.900,1.500,12.000,3300.000,62832.000,43.000,7,7001,7001,0,pressure_observation
+qos_mismatch_1000hz_pub_best_effort_sub_reliable_depth10,qos_mismatch,1000,best_effort,reliable,10,0.000,0.000,1000.000,0.000000,0.000,0.000,0.000,12.000,3300.000,62832.000,43.000,7,0,0,0,expected_qos_mismatch_no_sensor_samples
+
+Markdown Report
+markdown report path: /home/jetson/chengwei/runtime/results/qos/p0_014_pressure_report.md
+markdown report head:
+# P0-014 Pressure Experiment Report
+## P0 Gate Separation
+## Bottleneck Reading Guide
+## QoS Mismatch
+
+Git / Runtime Hygiene
+git status:
+!! ros2_ws/build/
+!! ros2_ws/install/
+!! ros2_ws/log/
+!! runtime/
+runtime artifact paths:
+/home/jetson/chengwei/runtime/results/qos
+/home/jetson/chengwei/runtime/logs/qos
+/home/jetson/chengwei/runtime/bags/qos
+
+Verdict
+PASS/FAIL: PASS
+Blocker if FAIL: -

@@ -1,0 +1,29 @@
+P0-014_RESULT
+
+Build
+colcon exit status: 0
+
+Unit Tests
+colcon test exit status: 0
+
+Pressure Matrix
+scenario count: 4
+pressure scenario count: 4
+qos mismatch scenario count: 0
+frequencies: 500,1000
+p0 high-frequency stability required: no
+
+CSV Results
+csv path: /home/jetson/chengwei/runtime/results/qos/p0_014_pressure_results.csv
+csv header:
+scenario_name,scenario_kind,frequency_hz,sensor_qos_reliability,processor_qos_reliability,qos_depth,receive_rate_hz,target_ratio,rate_gap_hz,drop_rate,average_latency_ms,p95_latency_ms,p99_latency_ms,cpu_percent,memory_used_mb,memory_total_mb,temperature_c,metrics_messages,received_count,expected_count,dropped_count,notes
+csv preview:
+scenario_name,scenario_kind,frequency_hz,sensor_qos_reliability,processor_qos_reliability,qos_depth,receive_rate_hz,target_ratio,rate_gap_hz,drop_rate,average_latency_ms,p95_latency_ms,p99_latency_ms,cpu_percent,memory_used_mb,memory_total_mb,temperature_c,metrics_messages,received_count,expected_count,dropped_count,notes
+pressure_500hz_pub_best_effort_sub_best_effort_depth10,pressure,500,best_effort,best_effort,10,498.100,0.996,1.900,0.001000,0.300,0.700,1.200,10.000,3300.000,62832.000,42.000,7,3500,3504,4,pressure_observation;nonzero_drop_rate
+
+Markdown Report
+markdown report path: /home/jetson/chengwei/runtime/results/qos/p0_014_pressure_report.md
+
+Verdict
+PASS/FAIL: FAIL
+Blocker if FAIL: expected 10 P0-014 scenarios, got 4

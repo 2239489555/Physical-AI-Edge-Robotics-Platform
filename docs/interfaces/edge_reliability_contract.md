@@ -264,6 +264,16 @@ P0-013 QoS experiment output:
 - CSV records scenario name, frequency, publisher/subscriber QoS, queue depth, receive rate, drop rate, average latency, p95 latency, p99 latency, CPU, RAM, temperature, and notes.
 - Jetson verification on HEAD `c9de283` completed all 8 scenarios with `SMOKE_EXIT_STATUS=0`.
 
+P0-014 pressure experiment output:
+
+- Runner: `scripts/run_p0_014_pressure_smoke.sh`.
+- CSV: `runtime/results/qos/p0_014_pressure_results.csv`.
+- Markdown report: `runtime/results/qos/p0_014_pressure_report.md`.
+- Matrix: 500Hz and 1000Hz, BestEffort and Reliable matched QoS, KeepLast depth 10 and 50.
+- QoS mismatch rows: BestEffort publisher with Reliable subscriber at 500Hz and 1000Hz; expected `received_count` is 0 while metrics still publish.
+- CSV records target ratio, rate gap, drop rate, latency percentiles, Jetson CPU/RAM/temperature context, counts, and notes.
+- 500Hz and 1000Hz stability is pressure evidence only, not a P0 pass condition.
+
 ## rosbag Topics
 
 Default P0 bag set:

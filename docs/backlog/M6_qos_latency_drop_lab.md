@@ -30,6 +30,7 @@ Robot communication reliability depends on QoS, queue depth, subscriber speed, p
 - Results are written to `runtime/results/qos/p0_013_qos_results.csv` and `runtime/results/qos/p0_013_qos_report.md`.
 - Generated per-scenario YAML stays under `runtime/tmp/p0-013/configs/`; launch logs stay under `runtime/logs/qos/`.
 - P0-013 evidence shows 100Hz and 200Hz Reliable runs tracking the target rate closely, while 200Hz BestEffort produced nonzero drop-rate and one high p99-latency run that should feed P0-014 pressure analysis.
+- P0-014 pressure runner is implemented and awaiting Jetson smoke evidence. It runs 500Hz/1000Hz pressure scenarios plus expected QoS mismatch rows, writing `runtime/results/qos/p0_014_pressure_results.csv` and `runtime/results/qos/p0_014_pressure_report.md`.
 
 ## Technical Constraints
 
