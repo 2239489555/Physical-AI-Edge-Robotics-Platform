@@ -1,6 +1,6 @@
 # Edge Reliability Interface Contract
 
-Status: P0 stable contract, P0-006 through P0-011 Jetson verified, P0-012 implementation prepared
+Status: P0 stable contract, P0-006 through P0-012 Jetson verified
 
 This document defines the ROS 2 interfaces for the Edge Robotics Reliability Lab. It is the implementation boundary for fake inputs, replayed bags, and future hardware adapters.
 
@@ -329,7 +329,7 @@ Verified on Jetson:
 - P0-009 fault injection completed with `SMOKE_EXIT_STATUS=0`: normal `drop_rate` was 0.000000, drop-fault `drop_rate` reached 0.192000 with 288 sequence-gap drops, subscriber delay increased p95 latency from 0.580ms to 8.436ms, and fault bags were recorded under `runtime/bags/p0-009`.
 - P0-010 health monitor completed with `SMOKE_EXIT_STATUS=0`: normal metrics produced `HEALTHY`, drop fault produced `UNHEALTHY`, subscriber delay produced `WARNING`, and the final warning-clean rerun had no package stderr output.
 - P0-011 system metrics completed with `SMOKE_EXIT_STATUS=0`: `/edge/metrics/system` published `SystemMetrics` from `system_metrics_node`, sample-file metrics included CPU, RAM, GR3D, temperature, power, and `source: tegrastats_sample_file`, raw logs were written under `runtime/logs/tegrastats`, and live `tegrastats` was available.
-- P0-012 implementation is prepared for Jetson verification: `health_monitor` subscribes to `/edge/metrics/system`, system thresholds are YAML-configurable, and `scripts/run_p0_012_system_health_smoke.sh` verifies default healthy behavior plus a system threshold crossing.
+- P0-012 system health integration completed with `SMOKE_EXIT_STATUS=0`: `health_monitor` subscribed to `/edge/metrics/system`, normal system-health stayed `HEALTHY`, system-pressure thresholds produced `UNHEALTHY` with `system_temperature_unhealthy,system_power_unhealthy`, and disk usage was published as `disk_used_percent`.
 
 Re-run commands:
 

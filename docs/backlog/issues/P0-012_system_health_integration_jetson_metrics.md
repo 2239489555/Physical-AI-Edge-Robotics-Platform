@@ -2,7 +2,7 @@
 
 Type: AFK
 
-Status: implementation prepared, awaiting Jetson smoke evidence
+Status: completed, Jetson verified on 2026-06-12
 
 User stories covered: 5, 7, 10, 17, 20
 
@@ -20,7 +20,7 @@ Extend health monitoring so Jetson CPU, RAM, disk, temperature, and GPU-related 
 - [x] System thresholds are YAML-configurable.
 - [x] Health output includes reason codes for pipeline and system warnings.
 - [x] CPU, RAM, disk, or temperature threshold crossings can move health to warning or unhealthy.
-- [ ] Test report includes at least one simulated or real threshold crossing.
+- [x] Test report includes at least one simulated or real threshold crossing.
 - [x] Interface contract documents system health rules and units.
 
 ## Implementation notes
@@ -32,7 +32,7 @@ Extend health monitoring so Jetson CPU, RAM, disk, temperature, and GPU-related 
 - `ros2_ws/src/edge_reliability_health/config/health_monitor_system_nominal.yaml` relaxes pipeline thresholds for deterministic P0-012 system-health smoke verification.
 - `ros2_ws/src/edge_reliability_health/config/health_monitor_system_pressure.yaml` intentionally lowers temperature and power thresholds for deterministic P0-012 smoke verification.
 - `scripts/run_p0_012_system_health_smoke.sh` runs default healthy and system-pressure scenarios and writes the report to `runtime/results/p0_012_smoke_report.txt`.
-- Completion requires returned Jetson smoke evidence with `PASS/FAIL: PASS`.
+- Returned Jetson smoke evidence completed with `PASS/FAIL: PASS`.
 
 ## Blocked by
 
@@ -48,6 +48,18 @@ Extend health monitoring so Jetson CPU, RAM, disk, temperature, and GPU-related 
 - `ros2 topic echo --once /edge/health/state edge_reliability_msgs/msg/HealthState`
 - `bash scripts/run_p0_012_system_health_smoke.sh`
 - `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_012_smoke_report.ps1 -ReportPath runtime\results\p0_012_smoke_report.txt`
+
+## Jetson verification evidence
+
+Verified on Jetson on 2026-06-12 with `SMOKE_EXIT_STATUS=0`.
+
+- Build: `colcon build --packages-select edge_reliability_msgs edge_reliability_fake_sensor edge_reliability_processor edge_reliability_system edge_reliability_health --symlink-install` completed with `Summary: 5 packages finished [1.96s]`.
+- Unit tests: `colcon test --packages-select edge_reliability_processor edge_reliability_system edge_reliability_health` completed with `Summary: 3 packages finished [0.74s]`; health test result reported 9 tests and system test result reported 4 tests with no failures.
+- Topic evidence: `/edge/health/state`, `/edge/metrics/pipeline`, `/edge/metrics/system`, and `/edge/sensors/fake_primary` were present.
+- Normal system-health scenario: sample-file system metrics reported CPU `2.500`, RAM `3300.000/62832.000` MiB, disk used `15.920%`, GPU `14.000`, temperature `42.000C`, power `6.190W`, and final health state `HEALTHY`.
+- System-pressure scenario: the same sample-file metrics with pressure thresholds produced final health state `UNHEALTHY` with `system_temperature_unhealthy,system_power_unhealthy`.
+- Runtime hygiene: only ignored `ros2_ws/build/`, `ros2_ws/install/`, `ros2_ws/log/`, and `runtime/` outputs were present; no residual processes were reported.
+- Local report verification passed with `scripts/verify_p0_012_smoke_report.ps1` against the returned Jetson report.
 
 ## Runtime artifact location
 

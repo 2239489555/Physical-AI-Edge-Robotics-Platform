@@ -293,7 +293,7 @@ foreach ($text in @(
     "health_monitor_system_nominal.yaml",
     "health_monitor_system_pressure.yaml",
     "scripts/run_p0_012_system_health_smoke.sh",
-    "Completion requires returned Jetson smoke evidence"
+    'Returned Jetson smoke evidence completed with `PASS/FAIL: PASS`'
 )) {
     Assert-Contains "P0-012 issue" $issue $text
 }

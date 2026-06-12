@@ -31,9 +31,10 @@ Jetson-specific observability is central to edge robotics work. tegrastats is th
 - The returned sample-file metrics showed `memory_used_mb: 3300.000`, `memory_total_mb: 62832.000`, `gpu_percent: 14.000`, `temperature_c: 42.000`, `power_w: 6.190`, and `source: tegrastats_sample_file`.
 - Live `tegrastats` was available on the Jetson rerun and wrote three probe lines under `runtime/logs/tegrastats`.
 - Raw sample input is written under `runtime/logs/tegrastats`.
-- P0-012 system health integration is implemented and awaiting Jetson smoke evidence.
+- P0-012 system health integration is completed and Jetson verified on 2026-06-12.
 - `health_monitor` now consumes `/edge/metrics/system` and can emit `system_cpu_*`, `system_memory_*`, `system_disk_*`, `system_gpu_*`, `system_temperature_*`, and `system_power_*` health rules.
 - `health_monitor_system_pressure.yaml` provides deterministic system threshold crossing evidence for the P0-012 smoke.
+- The returned P0-012 smoke reported normal `HEALTHY` and system-pressure `UNHEALTHY` with `system_temperature_unhealthy,system_power_unhealthy`.
 
 ## Technical Constraints
 
