@@ -224,23 +224,30 @@ foreach ($text in @(
 }
 
 foreach ($text in @(
+    "Status: completed, Jetson verified 2026-06-12",
     "Implementation notes",
+    "Jetson verification evidence",
+    "SMOKE_EXIT_STATUS=0",
+    "scenario count",
+    "8 scenarios",
     "scripts/run_p0_013_qos_experiment_smoke.sh",
     "runtime/results/qos",
     "p0_013_qos_results.csv",
-    "Completion requires returned Jetson smoke evidence"
+    "runtime/logs/qos"
 )) {
     Assert-Contains "P0-013 issue" $issue $text
 }
 
 foreach ($text in @(
     "P0-013",
+    "P0-006 through P0-013 Jetson verified",
     "sensor_qos_reliability",
     "qos_depth",
     "BestEffort",
     "Reliable",
     "runtime/results/qos",
-    "p0_013_qos_results.csv"
+    "p0_013_qos_results.csv",
+    "SMOKE_EXIT_STATUS=0"
 )) {
     Assert-Contains "interface contract" $interfaceContract $text
 }
@@ -248,9 +255,11 @@ foreach ($text in @(
 foreach ($text in @(
     "P0-013",
     "QoS experiment runner",
+    "Jetson verified",
     "100Hz",
     "200Hz",
-    "runtime/results/qos"
+    "runtime/results/qos",
+    "SMOKE_EXIT_STATUS=0"
 )) {
     Assert-Contains "M6 backlog" $m6 $text
 }

@@ -1,6 +1,6 @@
 # Edge Reliability Interface Contract
 
-Status: P0 stable contract, P0-006 through P0-012 Jetson verified
+Status: P0 stable contract, P0-006 through P0-013 Jetson verified
 
 This document defines the ROS 2 interfaces for the Edge Robotics Reliability Lab. It is the implementation boundary for fake inputs, replayed bags, and future hardware adapters.
 
@@ -262,6 +262,7 @@ P0-013 QoS experiment output:
 - Markdown report: `runtime/results/qos/p0_013_qos_report.md`.
 - Matrix: 100Hz and 200Hz, BestEffort and Reliable, KeepLast depth 10 and 50.
 - CSV records scenario name, frequency, publisher/subscriber QoS, queue depth, receive rate, drop rate, average latency, p95 latency, p99 latency, CPU, RAM, temperature, and notes.
+- Jetson verification on HEAD `c9de283` completed all 8 scenarios with `SMOKE_EXIT_STATUS=0`.
 
 ## rosbag Topics
 
@@ -341,6 +342,7 @@ Verified on Jetson:
 - P0-010 health monitor completed with `SMOKE_EXIT_STATUS=0`: normal metrics produced `HEALTHY`, drop fault produced `UNHEALTHY`, subscriber delay produced `WARNING`, and the final warning-clean rerun had no package stderr output.
 - P0-011 system metrics completed with `SMOKE_EXIT_STATUS=0`: `/edge/metrics/system` published `SystemMetrics` from `system_metrics_node`, sample-file metrics included CPU, RAM, GR3D, temperature, power, and `source: tegrastats_sample_file`, raw logs were written under `runtime/logs/tegrastats`, and live `tegrastats` was available.
 - P0-012 system health integration completed with `SMOKE_EXIT_STATUS=0`: `health_monitor` subscribed to `/edge/metrics/system`, normal system-health stayed `HEALTHY`, system-pressure thresholds produced `UNHEALTHY` with `system_temperature_unhealthy,system_power_unhealthy`, and disk usage was published as `disk_used_percent`.
+- P0-013 QoS experiment completed with `SMOKE_EXIT_STATUS=0`: the runner recorded 8 scenarios across 100Hz/200Hz, BestEffort/Reliable, and KeepLast depth 10/50; CSV output was written to `runtime/results/qos/p0_013_qos_results.csv`; Markdown output was written to `runtime/results/qos/p0_013_qos_report.md`; and runtime hygiene showed only ignored build/install/log/runtime artifacts.
 
 Re-run commands:
 

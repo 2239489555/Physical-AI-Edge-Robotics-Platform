@@ -2,7 +2,7 @@
 
 Type: AFK
 
-Status: implementation prepared, awaiting Jetson smoke evidence
+Status: completed, Jetson verified 2026-06-12
 
 User stories covered: 6, 7, 17, 20
 
@@ -31,7 +31,26 @@ Create the first QoS experiment runner that compares normal 100Hz and 200Hz beha
 - CSV output is written to `runtime/results/qos/p0_013_qos_results.csv`.
 - Markdown output is written to `runtime/results/qos/p0_013_qos_report.md`.
 - Scenario launch logs are written under `runtime/logs/qos/`.
-- Completion requires returned Jetson smoke evidence with `PASS/FAIL: PASS`.
+
+## Jetson verification evidence
+
+Returned P0-013 smoke evidence from Jetson HEAD `c9de283` completed with `SMOKE_EXIT_STATUS=0`, no timeout, and no residual `fake_sensor_adapter`, `sensor_processor`, `system_metrics_node`, or related launch processes.
+
+Summary:
+
+- Build completed for `edge_reliability_msgs`, `edge_reliability_fake_sensor`, `edge_reliability_processor`, and `edge_reliability_system`.
+- Unit tests completed with `Summary: 3 tests, 0 errors, 0 failures, 0 skipped`.
+- scenario count: 8.
+- Experiment matrix completed all 8 scenarios: `100Hz/200Hz x best_effort/reliable x depth 10/50`.
+- CSV output was written to `runtime/results/qos/p0_013_qos_results.csv`.
+- Markdown report was written to `runtime/results/qos/p0_013_qos_report.md`.
+- Runtime hygiene stayed clean: only ignored `ros2_ws/build/`, `ros2_ws/install/`, `ros2_ws/log/`, and `runtime/` outputs were present.
+
+Observed highlights:
+
+- 100Hz scenarios measured approximately 100Hz receive rate across both QoS profiles.
+- 200Hz Reliable scenarios measured approximately 200Hz receive rate with zero reported drops.
+- 200Hz BestEffort scenarios recorded nonzero drop-rate evidence, including a depth-50 run at 197.404Hz with p99 latency at 166.005ms, which is useful input for P0-014 pressure analysis.
 
 ## Blocked by
 

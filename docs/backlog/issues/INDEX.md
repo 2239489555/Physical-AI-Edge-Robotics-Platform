@@ -25,7 +25,7 @@
 | P0-010 | 可配置阈值的 health monitor（已完成） | AFK | P0-009 |
 | P0-011 | tegrastats 解析器与 ROS 2 system metrics node（已完成） | AFK | P0-002, P0-003 |
 | P0-012 | Jetson 指标接入 system health（已完成） | AFK | P0-010, P0-011 |
-| P0-013 | QoS 实验 runner 与 100/200Hz 报告（实现已准备，待 Jetson smoke） | AFK | P0-012 |
+| P0-013 | QoS 实验 runner 与 100/200Hz 报告（已完成） | AFK | P0-012 |
 | P0-014 | 500/1000Hz 压力实验与瓶颈报告 | AFK | P0-013 |
 | P0-015 | 项目内 start/stop runtime 脚本 | AFK | P0-012 |
 | P0-016 | health_check 与 collect_logs 诊断包 | AFK | P0-015 |
