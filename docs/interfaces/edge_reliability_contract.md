@@ -1,6 +1,6 @@
 # Edge Reliability Interface Contract
 
-Status: P0 stable contract, P0-006 through P0-013 Jetson verified
+Status: P0 stable contract, P0-006 through P0-014 Jetson verified
 
 This document defines the ROS 2 interfaces for the Edge Robotics Reliability Lab. It is the implementation boundary for fake inputs, replayed bags, and future hardware adapters.
 
@@ -273,6 +273,7 @@ P0-014 pressure experiment output:
 - QoS mismatch rows: BestEffort publisher with Reliable subscriber at 500Hz and 1000Hz; expected `received_count` is 0 while metrics still publish.
 - CSV records target ratio, rate gap, drop rate, latency percentiles, Jetson CPU/RAM/temperature context, counts, and notes.
 - 500Hz and 1000Hz stability is pressure evidence only, not a P0 pass condition.
+- Jetson verification on HEAD `ad3144c` completed all 10 scenarios with `SMOKE_EXIT_STATUS=0`.
 
 ## rosbag Topics
 
@@ -353,6 +354,7 @@ Verified on Jetson:
 - P0-011 system metrics completed with `SMOKE_EXIT_STATUS=0`: `/edge/metrics/system` published `SystemMetrics` from `system_metrics_node`, sample-file metrics included CPU, RAM, GR3D, temperature, power, and `source: tegrastats_sample_file`, raw logs were written under `runtime/logs/tegrastats`, and live `tegrastats` was available.
 - P0-012 system health integration completed with `SMOKE_EXIT_STATUS=0`: `health_monitor` subscribed to `/edge/metrics/system`, normal system-health stayed `HEALTHY`, system-pressure thresholds produced `UNHEALTHY` with `system_temperature_unhealthy,system_power_unhealthy`, and disk usage was published as `disk_used_percent`.
 - P0-013 QoS experiment completed with `SMOKE_EXIT_STATUS=0`: the runner recorded 8 scenarios across 100Hz/200Hz, BestEffort/Reliable, and KeepLast depth 10/50; CSV output was written to `runtime/results/qos/p0_013_qos_results.csv`; Markdown output was written to `runtime/results/qos/p0_013_qos_report.md`; and runtime hygiene showed only ignored build/install/log/runtime artifacts.
+- P0-014 pressure experiment completed with `SMOKE_EXIT_STATUS=0`: the runner recorded 10 scenarios across 500Hz/1000Hz pressure rows and expected QoS mismatch rows; CSV output was written to `runtime/results/qos/p0_014_pressure_results.csv`; Markdown output was written to `runtime/results/qos/p0_014_pressure_report.md`; mismatch rows produced `RELIABILITY_QOS_POLICY` warnings with `received_count=0`; and runtime hygiene showed only ignored build/install/log/runtime artifacts.
 
 Re-run commands:
 

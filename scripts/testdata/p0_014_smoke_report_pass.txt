@@ -56,6 +56,8 @@ markdown report path: /home/jetson/chengwei/runtime/results/qos/p0_014_pressure_
 markdown report head:
 # P0-014 Pressure Experiment Report
 ## P0 Gate Separation
+- 500Hz and 1000Hz stability is not a P0 pass condition.
+- Receive-rate shortfall, drops, and latency spikes are pressure observations for bottleneck analysis.
 ## Bottleneck Reading Guide
 ## QoS Mismatch
 

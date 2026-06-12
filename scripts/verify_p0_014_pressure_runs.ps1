@@ -177,13 +177,19 @@ foreach ($text in @(
 }
 
 foreach ($text in @(
-    "Status: implementation prepared, awaiting Jetson smoke evidence",
+    "Status: completed, Jetson verified 2026-06-12",
+    "Jetson verification evidence",
+    "SMOKE_EXIT_STATUS=0",
+    "scenario count: 10",
+    "pressure scenario count: 8",
+    "qos mismatch scenario count: 2",
     "scripts/run_p0_014_pressure_smoke.sh",
     "500Hz/1000Hz",
     "BestEffort publisher plus Reliable subscriber",
     "runtime/results/qos/p0_014_pressure_results.csv",
     "runtime/results/qos/p0_014_pressure_report.md",
-    "Completion requires returned Jetson smoke evidence"
+    "RELIABILITY_QOS_POLICY",
+    "received_count=0"
 )) {
     Assert-Contains "P0-014 issue" $issue $text
 }
@@ -191,26 +197,30 @@ foreach ($text in @(
 foreach ($text in @(
     "P0-014",
     "500/1000Hz",
-    "Jetson smoke"
+    "P0-015"
 )) {
     Assert-Contains "issue index" $index $text
 }
 
 foreach ($text in @(
+    "P0-006 through P0-014 Jetson verified",
     "P0-014 pressure experiment output",
     "run_p0_014_pressure_smoke.sh",
     "p0_014_pressure_results.csv",
     "BestEffort publisher with Reliable subscriber",
-    "500Hz and 1000Hz stability is pressure evidence only"
+    "500Hz and 1000Hz stability is pressure evidence only",
+    "SMOKE_EXIT_STATUS=0"
 )) {
     Assert-Contains "interface contract" $interfaceContract $text
 }
 
 foreach ($text in @(
-    "P0-014 pressure runner is implemented",
+    "P0-014 pressure runner is completed",
     "500Hz/1000Hz",
     "QoS mismatch",
-    "p0_014_pressure_results.csv"
+    "p0_014_pressure_results.csv",
+    "SMOKE_EXIT_STATUS=0",
+    "target_ratio=0.934"
 )) {
     Assert-Contains "M6 backlog" $m6 $text
 }

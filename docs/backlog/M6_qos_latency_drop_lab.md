@@ -30,7 +30,10 @@ Robot communication reliability depends on QoS, queue depth, subscriber speed, p
 - Results are written to `runtime/results/qos/p0_013_qos_results.csv` and `runtime/results/qos/p0_013_qos_report.md`.
 - Generated per-scenario YAML stays under `runtime/tmp/p0-013/configs/`; launch logs stay under `runtime/logs/qos/`.
 - P0-013 evidence shows 100Hz and 200Hz Reliable runs tracking the target rate closely, while 200Hz BestEffort produced nonzero drop-rate and one high p99-latency run that should feed P0-014 pressure analysis.
-- P0-014 pressure runner is implemented and awaiting Jetson smoke evidence. It runs 500Hz/1000Hz pressure scenarios plus expected QoS mismatch rows, writing `runtime/results/qos/p0_014_pressure_results.csv` and `runtime/results/qos/p0_014_pressure_report.md`.
+- P0-014 pressure runner is completed and Jetson verified with `SMOKE_EXIT_STATUS=0` on HEAD `ad3144c`.
+- `scripts/run_p0_014_pressure_smoke.sh` ran 10 scenarios: 8 matched 500Hz/1000Hz pressure rows plus 2 expected QoS mismatch rows.
+- Results are written to `runtime/results/qos/p0_014_pressure_results.csv` and `runtime/results/qos/p0_014_pressure_report.md`.
+- P0-014 evidence shows high-rate pressure symptoms without making 500Hz or 1000Hz stability a P0 gate: observed examples include 1000Hz BestEffort depth 50 at `target_ratio=0.934`, 500Hz BestEffort depth 50 p99 latency at 28.722ms, and expected `RELIABILITY_QOS_POLICY` mismatch rows with `received_count=0`.
 
 ## Technical Constraints
 

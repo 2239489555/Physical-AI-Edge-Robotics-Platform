@@ -2,7 +2,7 @@
 
 Type: AFK
 
-Status: implementation prepared, awaiting Jetson smoke evidence
+Status: completed, Jetson verified 2026-06-12
 
 User stories covered: 5, 6, 7, 17, 20
 
@@ -32,7 +32,28 @@ Extend QoS experiments with 500Hz and 1000Hz pressure runs that generate evidenc
 - Per-scenario generated YAML stays under `runtime/tmp/p0-014/configs/`.
 - Per-scenario launch logs stay under `runtime/logs/qos/`.
 - `runtime/bags/qos/` is reserved, but the smoke runner intentionally avoids high-rate bag recording to keep company-server artifacts small.
-- Completion requires returned Jetson smoke evidence with `PASS/FAIL: PASS`.
+
+## Jetson verification evidence
+
+Returned P0-014 smoke evidence from Jetson HEAD `ad3144c` completed with `SMOKE_EXIT_STATUS=0`, no timeout after about 363 seconds, and no residual `fake_sensor_adapter`, `sensor_processor`, `system_metrics_node`, or related launch processes.
+
+Summary:
+
+- Build completed for `edge_reliability_msgs`, `edge_reliability_fake_sensor`, `edge_reliability_processor`, and `edge_reliability_system`.
+- Unit tests completed with `Summary: 3 tests, 0 errors, 0 failures, 0 skipped`.
+- scenario count: 10.
+- pressure scenario count: 8.
+- qos mismatch scenario count: 2.
+- CSV output was written to `runtime/results/qos/p0_014_pressure_results.csv`.
+- Markdown report was written to `runtime/results/qos/p0_014_pressure_report.md`.
+- Runtime hygiene stayed clean: only ignored `ros2_ws/build/`, `ros2_ws/install/`, `ros2_ws/log/`, and `runtime/` outputs were present.
+
+Observed highlights:
+
+- 500Hz matched QoS scenarios tracked target rate closely; depth 50 BestEffort still showed p99 latency pressure at 28.722ms.
+- 1000Hz BestEffort depth 10 tracked the target rate with zero drop rate, while 1000Hz BestEffort depth 50 measured 933.616Hz (`target_ratio=0.934`), giving a concrete receive-rate shortfall example.
+- 1000Hz Reliable depth 10 showed nonzero drop-rate evidence (`drop_rate=0.013389`), while Reliable depth 50 reached 1000.018Hz with zero drops in the returned run.
+- QoS mismatch scenarios reproduced `RELIABILITY_QOS_POLICY` warnings with `received_count=0` for both 500Hz and 1000Hz, which is the expected compatibility failure.
 
 ## Blocked by
 

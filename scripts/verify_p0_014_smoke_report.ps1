@@ -61,8 +61,8 @@ foreach ($text in @(
     "qos_mismatch_500hz",
     "qos_mismatch_1000hz",
     "P0 Gate Separation",
-    "Bottleneck Reading Guide",
-    "QoS Mismatch",
+    "500Hz and 1000Hz stability is not a P0 pass condition",
+    "Receive-rate shortfall, drops, and latency spikes are pressure observations",
     "runtime/results/qos",
     "runtime/logs/qos",
     "runtime/bags/qos"
@@ -88,7 +88,7 @@ if ($mismatchCount -ne 2) {
     throw "P0-014 QoS mismatch scenario count must be 2, got $mismatchCount"
 }
 
-$csvPreview = [regex]::Match($report, "csv preview:\s*(?<preview>.*?)\r?\n\r?\nMarkdown Report", [System.Text.RegularExpressions.RegexOptions]::Singleline)
+$csvPreview = [regex]::Match($report, "csv preview:\s*(?<preview>.*?)\r?\nMarkdown Report", [System.Text.RegularExpressions.RegexOptions]::Singleline)
 if (-not $csvPreview.Success) {
     throw "P0-014 smoke report missing CSV preview block"
 }

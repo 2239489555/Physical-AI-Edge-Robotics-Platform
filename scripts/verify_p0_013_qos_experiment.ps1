@@ -240,7 +240,7 @@ foreach ($text in @(
 
 foreach ($text in @(
     "P0-013",
-    "P0-006 through P0-013 Jetson verified",
+    "P0-006 through P0-014 Jetson verified",
     "sensor_qos_reliability",
     "qos_depth",
     "BestEffort",
