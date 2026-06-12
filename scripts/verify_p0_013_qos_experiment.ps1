@@ -139,6 +139,10 @@ foreach ($text in @(
     "write_fake_config",
     "write_processor_config",
     "run_qos_scenario",
+    "wait_for_topic_type",
+    "launch_and_check ACTIVE_FAKE_PID",
+    "launch_and_check ACTIVE_PROCESSOR_PID",
+    "launch_and_check ACTIVE_SYSTEM_PID",
     "for hz in 100 200",
     "for reliability in best_effort reliable",
     "for depth in 10 50",
@@ -158,7 +162,10 @@ foreach ($forbidden in @(
     "sudo ",
     "rm -rf",
     " /tmp/p0-013",
-    "`n/tmp/p0-013"
+    "`n/tmp/p0-013",
+    'ACTIVE_FAKE_PID="$(launch_and_check',
+    'ACTIVE_PROCESSOR_PID="$(launch_and_check',
+    'ACTIVE_SYSTEM_PID="$(launch_and_check'
 )) {
     Assert-NotContains "scripts/run_p0_013_qos_experiment_smoke.sh" $smokeScript $forbidden
 }

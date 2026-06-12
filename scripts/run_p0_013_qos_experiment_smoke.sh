@@ -38,9 +38,15 @@ ACTIVE_FAKE_PID=""
 ACTIVE_PROCESSOR_PID=""
 ACTIVE_SYSTEM_PID=""
 SCENARIO_COUNT=0
+CURRENT_SCENARIO="-"
+CURRENT_TOPIC_LIST=""
+CURRENT_FAKE_LOG=""
+CURRENT_PROCESSOR_LOG=""
+CURRENT_SYSTEM_LOG=""
 
 WARMUP_SECONDS=6
 CAPTURE_SECONDS=7
+TOPIC_WAIT_SECONDS=25
 CLEANUP_INT_WAIT_SECONDS=8
 CLEANUP_TERM_WAIT_SECONDS=5
 
@@ -358,10 +364,11 @@ PY
 }
 
 launch_and_check() {
-  local command_label="$1"
-  local log_file="$2"
-  local process_file="$3"
-  shift 3
+  local result_var="$1"
+  local command_label="$2"
+  local log_file="$3"
+  local process_file="$4"
+  shift 4
 
   "$@" > "$log_file" 2>&1 &
   local pid="$!"
@@ -373,7 +380,44 @@ launch_and_check() {
   fi
 
   ps -p "$pid" -o pid,cmd > "$process_file"
-  echo "$pid"
+  printf -v "$result_var" '%s' "$pid"
+}
+
+assert_process_alive() {
+  local pid="$1"
+  local label="$2"
+
+  if [[ -z "$pid" ]] || ! kill -0 "$pid" 2>/dev/null; then
+    fail "$CURRENT_SCENARIO $label exited before readiness"
+  fi
+}
+
+wait_for_topic_type() {
+  local topic="$1"
+  local topic_type="$2"
+  local output_file="$3"
+  local timeout_seconds="${4:-25}"
+  local deadline=$((SECONDS + timeout_seconds))
+
+  while (( SECONDS < deadline )); do
+    ros2 topic list -t > "$output_file" 2>&1 || true
+    if grep -F "$topic [$topic_type]" "$output_file" >/dev/null 2>&1; then
+      return 0
+    fi
+
+    assert_process_alive "${ACTIVE_FAKE_PID:-}" "fake sensor launch"
+    if [[ -n "${ACTIVE_PROCESSOR_PID:-}" ]]; then
+      assert_process_alive "$ACTIVE_PROCESSOR_PID" "processor launch"
+    fi
+    if [[ -n "${ACTIVE_SYSTEM_PID:-}" ]]; then
+      assert_process_alive "$ACTIVE_SYSTEM_PID" "system metrics launch"
+    fi
+
+    sleep 1
+  done
+
+  ros2 topic list -t > "$output_file" 2>&1 || true
+  return 1
 }
 
 append_csv_row() {
@@ -435,6 +479,7 @@ run_qos_scenario() {
   local system_summary="$QOS_RESULT_DIR/${scenario}_system_summary.txt"
   local sensor_topic_info="$QOS_RESULT_DIR/${scenario}_sensor_topic_info.txt"
   local metrics_topic_info="$QOS_RESULT_DIR/${scenario}_metrics_topic_info.txt"
+  local topic_list="$QOS_RESULT_DIR/${scenario}_topic_list_typed.txt"
   local fake_log="$QOS_LOG_DIR/${scenario}_fake_sensor_launch.txt"
   local processor_log="$QOS_LOG_DIR/${scenario}_processor_launch.txt"
   local system_log="$QOS_LOG_DIR/${scenario}_system_metrics_launch.txt"
@@ -443,22 +488,51 @@ run_qos_scenario() {
   local system_process="$QOS_RESULT_DIR/${scenario}_system_launch_process.txt"
   local raw_log="$QOS_LOG_DIR/${scenario}_tegrastats_raw.log"
 
+  CURRENT_SCENARIO="$scenario"
+  CURRENT_TOPIC_LIST="$topic_list"
+  CURRENT_FAKE_LOG="$fake_log"
+  CURRENT_PROCESSOR_LOG="$processor_log"
+  CURRENT_SYSTEM_LOG="$system_log"
+
   write_fake_config "$fake_config" "$hz" "$reliability" "$depth"
   write_processor_config "$processor_config" "$hz" "$reliability" "$depth"
   : > "$raw_log"
 
-  ACTIVE_FAKE_PID="$(launch_and_check "$scenario fake sensor launch" "$fake_log" "$fake_process" \
-    ros2 launch edge_reliability_fake_sensor fake_sensor.launch.py "config_file:=$fake_config")"
-  ACTIVE_PROCESSOR_PID="$(launch_and_check "$scenario processor launch" "$processor_log" "$processor_process" \
-    ros2 launch edge_reliability_processor processor.launch.py "config_file:=$processor_config")"
-  ACTIVE_SYSTEM_PID="$(launch_and_check "$scenario system metrics launch" "$system_log" "$system_process" \
+  # launch_and_check must assign by variable name. Running it through command
+  # substitution would execute the function in a subshell whose EXIT trap can
+  # clean up previously launched ROS processes.
+  launch_and_check ACTIVE_FAKE_PID "$scenario fake sensor launch" "$fake_log" "$fake_process" \
+    ros2 launch edge_reliability_fake_sensor fake_sensor.launch.py "config_file:=$fake_config"
+
+  if ! wait_for_topic_type "$SENSOR_TOPIC" "$SENSOR_TYPE" "$topic_list" "$TOPIC_WAIT_SECONDS"; then
+    fail "$scenario sensor topic did not become ready"
+  fi
+
+  launch_and_check ACTIVE_PROCESSOR_PID "$scenario processor launch" "$processor_log" "$processor_process" \
+    ros2 launch edge_reliability_processor processor.launch.py "config_file:=$processor_config"
+
+  if ! wait_for_topic_type "$METRICS_TOPIC" "$METRICS_TYPE" "$topic_list" "$TOPIC_WAIT_SECONDS"; then
+    fail "$scenario metrics topic did not become ready"
+  fi
+
+  launch_and_check ACTIVE_SYSTEM_PID "$scenario system metrics launch" "$system_log" "$system_process" \
     ros2 launch edge_reliability_system system_metrics.launch.py \
-      "sample_file:=$SYSTEM_SAMPLE_FILE" "raw_log_path:=$raw_log" "disk_path:=$REPO_ROOT")"
+      "sample_file:=$SYSTEM_SAMPLE_FILE" "raw_log_path:=$raw_log" "disk_path:=$REPO_ROOT"
+
+  if ! wait_for_topic_type "$SYSTEM_TOPIC" "$SYSTEM_TYPE" "$topic_list" "$TOPIC_WAIT_SECONDS"; then
+    fail "$scenario system metrics topic did not become ready"
+  fi
 
   sleep "$WARMUP_SECONDS"
 
   ros2 topic info "$SENSOR_TOPIC" -v | tee "$sensor_topic_info" >/dev/null
+  if [[ "${PIPESTATUS[0]}" -ne 0 ]]; then
+    fail "$scenario sensor topic info failed"
+  fi
   ros2 topic info "$METRICS_TOPIC" -v | tee "$metrics_topic_info" >/dev/null
+  if [[ "${PIPESTATUS[0]}" -ne 0 ]]; then
+    fail "$scenario metrics topic info failed"
+  fi
 
   capture_metrics_summary "$metrics_summary" "$CAPTURE_SECONDS"
   if [[ "$?" -ne 0 ]]; then
@@ -560,6 +634,17 @@ write_report() {
     echo "markdown report path: $MARKDOWN_REPORT"
     echo "markdown report head:"
     print_head "$MARKDOWN_REPORT"
+    echo
+    echo "Failure Context"
+    echo "current scenario: $CURRENT_SCENARIO"
+    echo "last typed topic list:"
+    print_head "$CURRENT_TOPIC_LIST"
+    echo "last fake sensor launch log tail:"
+    print_tail "$CURRENT_FAKE_LOG"
+    echo "last processor launch log tail:"
+    print_tail "$CURRENT_PROCESSOR_LOG"
+    echo "last system metrics launch log tail:"
+    print_tail "$CURRENT_SYSTEM_LOG"
     echo
     echo "Git / Runtime Hygiene"
     echo "git status:"
