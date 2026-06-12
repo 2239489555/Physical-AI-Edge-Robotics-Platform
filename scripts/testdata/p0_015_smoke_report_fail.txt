@@ -1,0 +1,17 @@
+P0-015_RESULT
+
+Build
+colcon exit status: 0
+
+Unit Tests
+colcon test exit status: 0
+
+Runtime Lifecycle
+start exit status: 1
+stop exit status: 0
+run dir: /home/jetson/chengwei/runtime/run/p0_runtime
+log dir: /home/jetson/chengwei/runtime/logs/runtime
+
+Verdict
+PASS/FAIL: FAIL
+Blocker if FAIL: start_runtime.sh failed

@@ -18,6 +18,7 @@ $subdirs = @(
     "results",
     "artifacts",
     "cache",
+    "run",
     "tmp"
 )
 
@@ -38,6 +39,7 @@ Use it for project-local Jetson runtime outputs:
 - results/
 - artifacts/
 - cache/
+- run/
 - tmp/
 
 Do not commit this directory.

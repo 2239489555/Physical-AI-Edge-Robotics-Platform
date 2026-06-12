@@ -96,3 +96,15 @@ Use `run_p0_014_pressure_smoke.sh` on Jetson to run the pressure matrix and writ
 Use `verify_p0_014_smoke_report.ps1` from Windows to check a returned P0-014 `runtime/results/p0_014_smoke_report.txt` before marking the issue complete.
 
 Use `verify_p0_014_completion_gate.ps1` from Windows after a returned P0-014 report exists to run both the static pressure-run gate and the returned-report gate.
+
+Use `start_runtime.sh` on Jetson to start the P0 runtime pipeline from the project checkout. It launches fake sensor, processor, system metrics, and health monitor nodes, stores its manifest under `runtime/run/p0_runtime/`, and writes logs under `runtime/logs/runtime/`.
+
+Use `stop_runtime.sh` on Jetson to stop only the processes recorded by `start_runtime.sh`.
+
+Use `run_p0_015_runtime_lifecycle_smoke.sh` on Jetson to build the P0 runtime packages, start the runtime, verify nodes/topics/health output, stop the runtime, and confirm manifest PIDs are stopped.
+
+Use `verify_p0_015_runtime_scripts.ps1` from Windows to check that P0-015 start/stop scripts, lifecycle smoke, runbook, and issue docs cover project-local runtime process management.
+
+Use `verify_p0_015_smoke_report.ps1` from Windows to check a returned P0-015 `runtime/results/p0_015_smoke_report.txt` before marking the issue complete.
+
+Use `verify_p0_015_completion_gate.ps1` from Windows after a returned P0-015 report exists to run both the static runtime-script gate and the returned-report gate.

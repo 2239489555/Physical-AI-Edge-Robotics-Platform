@@ -20,6 +20,7 @@ mkdir -p \
   "${RUNTIME_DIR}/results" \
   "${RUNTIME_DIR}/artifacts" \
   "${RUNTIME_DIR}/cache" \
+  "${RUNTIME_DIR}/run" \
   "${RUNTIME_DIR}/tmp"
 
 cat > "${RUNTIME_DIR}/README.local.md" <<'EOF'
@@ -35,6 +36,7 @@ Use it for project-local Jetson runtime outputs:
 - results/
 - artifacts/
 - cache/
+- run/
 - tmp/
 
 Do not commit this directory.

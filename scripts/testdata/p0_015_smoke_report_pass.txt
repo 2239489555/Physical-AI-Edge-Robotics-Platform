@@ -1,0 +1,65 @@
+P0-015_RESULT
+
+Build
+colcon exit status: 0
+build summary:
+Starting >>> edge_reliability_msgs
+Finished <<< edge_reliability_msgs [0.75s]
+Starting >>> edge_reliability_fake_sensor
+Finished <<< edge_reliability_fake_sensor [0.22s]
+Starting >>> edge_reliability_processor
+Finished <<< edge_reliability_processor [0.28s]
+Starting >>> edge_reliability_system
+Finished <<< edge_reliability_system [0.29s]
+Starting >>> edge_reliability_health
+Finished <<< edge_reliability_health [13.5s]
+Summary: 5 packages finished [15.5s]
+
+Unit Tests
+colcon test exit status: 0
+test-result tail:
+Summary: 9 tests, 0 errors, 0 failures, 0 skipped
+
+Runtime Lifecycle
+start exit status: 0
+stop exit status: 0
+run dir: /home/jetson/chengwei/runtime/run/p0_runtime
+log dir: /home/jetson/chengwei/runtime/logs/runtime
+manifest path: /home/jetson/chengwei/runtime/run/p0_runtime/manifest.tsv
+status file:
+status=stopped
+manifest_archive=/home/jetson/chengwei/runtime/run/p0_runtime/manifest.stopped.20260612T010203Z.tsv
+stop_failed=0
+
+Runtime Evidence
+node list:
+/fake_sensor_adapter
+/health_monitor
+/sensor_processor
+/system_metrics_node
+topic list:
+/edge/health/state [edge_reliability_msgs/msg/HealthState]
+/edge/metrics/pipeline [edge_reliability_msgs/msg/PipelineMetrics]
+/edge/metrics/system [edge_reliability_msgs/msg/SystemMetrics]
+/edge/sensors/fake_primary [edge_reliability_msgs/msg/SensorSample]
+health echo once:
+header:
+  frame_id: health_state_frame
+state: 0
+reason: healthy: pipeline and system metrics within thresholds
+pid check:
+stopped: label=fake_sensor pid=1001 log=/home/jetson/chengwei/runtime/logs/runtime/fake_sensor_launch.log
+stopped: label=processor pid=1002 log=/home/jetson/chengwei/runtime/logs/runtime/processor_launch.log
+stopped: label=system_metrics pid=1003 log=/home/jetson/chengwei/runtime/logs/runtime/system_metrics_launch.log
+stopped: label=health_monitor pid=1004 log=/home/jetson/chengwei/runtime/logs/runtime/health_monitor_launch.log
+
+Git / Runtime Hygiene
+git status:
+!! ros2_ws/build/
+!! ros2_ws/install/
+!! ros2_ws/log/
+!! runtime/
+
+Verdict
+PASS/FAIL: PASS
+Blocker if FAIL: -
