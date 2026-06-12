@@ -1,0 +1,67 @@
+P0-013_RESULT
+
+Build
+colcon exit status: 0
+build summary:
+Starting >>> edge_reliability_msgs
+Finished <<< edge_reliability_msgs [0.75s]
+Starting >>> edge_reliability_fake_sensor
+Finished <<< edge_reliability_fake_sensor [0.23s]
+Starting >>> edge_reliability_processor
+Finished <<< edge_reliability_processor [0.30s]
+Starting >>> edge_reliability_system
+Finished <<< edge_reliability_system [0.27s]
+Summary: 4 packages finished [1.96s]
+
+Unit Tests
+colcon test exit status: 0
+test-result tail:
+Summary: 6 tests, 0 errors, 0 failures, 0 skipped
+
+Experiment Matrix
+scenario count: 8
+frequencies: 100,200
+reliability profiles: best_effort,reliable
+keep_last depths: 10,50
+sensor topic: /edge/sensors/fake_primary
+sensor type: edge_reliability_msgs/msg/SensorSample
+metrics topic: /edge/metrics/pipeline
+metrics type: edge_reliability_msgs/msg/PipelineMetrics
+system topic: /edge/metrics/system
+system type: edge_reliability_msgs/msg/SystemMetrics
+
+CSV Results
+csv path: /home/jetson/chengwei/runtime/results/qos/p0_013_qos_results.csv
+csv header:
+scenario_name,frequency_hz,sensor_qos_reliability,processor_qos_reliability,qos_depth,receive_rate_hz,drop_rate,average_latency_ms,p95_latency_ms,p99_latency_ms,cpu_percent,memory_used_mb,memory_total_mb,temperature_c,notes
+csv preview:
+scenario_name,frequency_hz,sensor_qos_reliability,processor_qos_reliability,qos_depth,receive_rate_hz,drop_rate,average_latency_ms,p95_latency_ms,p99_latency_ms,cpu_percent,memory_used_mb,memory_total_mb,temperature_c,notes
+qos_100hz_best_effort_depth10,100,best_effort,best_effort,10,100.001,0.000000,0.180,0.400,0.520,2.500,3300.000,62832.000,42.000,matched_best_effort_depth_10
+qos_100hz_best_effort_depth50,100,best_effort,best_effort,50,99.998,0.000000,0.190,0.410,0.530,2.500,3300.000,62832.000,42.000,matched_best_effort_depth_50
+qos_100hz_reliable_depth10,100,reliable,reliable,10,100.002,0.000000,0.200,0.430,0.550,2.500,3300.000,62832.000,42.000,matched_reliable_depth_10
+qos_100hz_reliable_depth50,100,reliable,reliable,50,100.000,0.000000,0.210,0.440,0.560,2.500,3300.000,62832.000,42.000,matched_reliable_depth_50
+qos_200hz_best_effort_depth10,200,best_effort,best_effort,10,199.800,0.000000,0.220,0.460,0.620,2.500,3300.000,62832.000,42.000,matched_best_effort_depth_10
+qos_200hz_best_effort_depth50,200,best_effort,best_effort,50,199.900,0.000000,0.230,0.470,0.630,2.500,3300.000,62832.000,42.000,matched_best_effort_depth_50
+qos_200hz_reliable_depth10,200,reliable,reliable,10,199.700,0.000000,0.240,0.500,0.660,2.500,3300.000,62832.000,42.000,matched_reliable_depth_10
+qos_200hz_reliable_depth50,200,reliable,reliable,50,199.850,0.000000,0.250,0.520,0.690,2.500,3300.000,62832.000,42.000,matched_reliable_depth_50
+
+Markdown Report
+markdown report path: /home/jetson/chengwei/runtime/results/qos/p0_013_qos_report.md
+markdown report head:
+# P0-013 QoS Experiment Report
+CSV: `/home/jetson/chengwei/runtime/results/qos/p0_013_qos_results.csv`
+## Observed Tradeoffs
+
+Git / Runtime Hygiene
+git status:
+!! ros2_ws/build/
+!! ros2_ws/install/
+!! ros2_ws/log/
+!! runtime/
+runtime artifact paths:
+/home/jetson/chengwei/runtime/results/qos
+/home/jetson/chengwei/runtime/logs/qos
+
+Verdict
+PASS/FAIL: PASS
+Blocker if FAIL: -

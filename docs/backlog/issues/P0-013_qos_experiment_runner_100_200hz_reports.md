@@ -2,6 +2,8 @@
 
 Type: AFK
 
+Status: implementation prepared, awaiting Jetson smoke evidence
+
 User stories covered: 6, 7, 17, 20
 
 ## Parent
@@ -14,12 +16,22 @@ Create the first QoS experiment runner that compares normal 100Hz and 200Hz beha
 
 ## Acceptance criteria
 
-- [ ] Experiment runner can execute named scenarios for 100Hz and 200Hz.
-- [ ] Reliable and BestEffort profiles are compared where applicable.
-- [ ] KeepLast depths are configurable and recorded.
-- [ ] CSV includes scenario name, frequency, QoS, queue depth, receive rate, drop rate, avg latency, p95 latency, p99 latency, CPU/RAM/temperature fields where available, and notes.
-- [ ] Markdown report explains observed tradeoffs.
-- [ ] Runtime result files stay under project-local runtime results.
+- [x] Experiment runner can execute named scenarios for 100Hz and 200Hz.
+- [x] Reliable and BestEffort profiles are compared where applicable.
+- [x] KeepLast depths are configurable and recorded.
+- [x] CSV includes scenario name, frequency, QoS, queue depth, receive rate, drop rate, avg latency, p95 latency, p99 latency, CPU/RAM/temperature fields where available, and notes.
+- [x] Markdown report explains observed tradeoffs.
+- [x] Runtime result files stay under project-local runtime results.
+
+## Implementation notes
+
+- `sensor_processor` now exposes `sensor_qos_reliability` while keeping the default `best_effort` behavior.
+- `scripts/run_p0_013_qos_experiment_smoke.sh` generates per-scenario YAML under `runtime/tmp/p0-013/configs/`.
+- The runner executes 8 scenarios: `100Hz/200Hz x best_effort/reliable x depth 10/50`.
+- CSV output is written to `runtime/results/qos/p0_013_qos_results.csv`.
+- Markdown output is written to `runtime/results/qos/p0_013_qos_report.md`.
+- Scenario launch logs are written under `runtime/logs/qos/`.
+- Completion requires returned Jetson smoke evidence with `PASS/FAIL: PASS`.
 
 ## Blocked by
 
@@ -27,10 +39,11 @@ Create the first QoS experiment runner that compares normal 100Hz and 200Hz beha
 
 ## Verification commands
 
-- `ros2 launch <package> <experiment_launch>`
-- Experiment runner command.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_013_qos_experiment.ps1`
+- `bash scripts/run_p0_013_qos_experiment_smoke.sh`
 - `ros2 topic info <topic>`
 - Inspect generated CSV.
+- `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\verify_p0_013_smoke_report.ps1 -ReportPath runtime\results\p0_013_smoke_report.txt`
 
 ## Runtime artifact location
 

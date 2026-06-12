@@ -148,6 +148,8 @@ Recommended P0 parameters:
 | `fake_sensor_adapter` | `drop_enabled` | `false` | P0-009 synthetic drop injection switch |
 | `fake_sensor_adapter` | `drop_probability` | `0.0` | P0-009 synthetic drop probability from 0.0 to 1.0 |
 | `fake_sensor_adapter` | `drop_seed` | `1` | P0-009 deterministic random seed for repeatable drop runs |
+| `fake_sensor_adapter` | `qos_depth` | `10` | P0-013 KeepLast depth for the sensor publisher |
+| `fake_sensor_adapter` | `qos_reliability` | `best_effort` | P0-013 sensor publisher QoS, either BestEffort or Reliable |
 | `sensor_processor` | `expected_hz` | `100.0` | Target rate for metrics |
 | `sensor_processor` | `latency_warn_ms` | `20.0` | Warning threshold for latency |
 | `sensor_processor` | `latency_unhealthy_ms` | `50.0` | Unhealthy threshold for latency |
@@ -158,6 +160,7 @@ Recommended P0 parameters:
 | `sensor_processor` | `latency_window_size` | `1000` | Rolling latency sample window |
 | `sensor_processor` | `processing_delay_enabled` | `false` | P0-009 subscriber delay injection switch |
 | `sensor_processor` | `processing_delay_ms` | `0.0` | P0-009 per-sample delay used to increase `p95_latency_ms` and `p99_latency_ms` |
+| `sensor_processor` | `sensor_qos_reliability` | `best_effort` | P0-013 sensor subscription QoS, either BestEffort or Reliable |
 | `health_monitor` | `metrics_topic` | `/edge/metrics/pipeline` | P0-010 input `PipelineMetrics` topic |
 | `health_monitor` | `system_metrics_topic` | `/edge/metrics/system` | P0-012 input `SystemMetrics` topic |
 | `health_monitor` | `health_topic` | `/edge/health/state` | P0-010 output `HealthState` topic |
@@ -251,6 +254,14 @@ P0 default QoS policy:
 - Health stream: keep last 1, reliable; transient local may be used later if dashboards need the last state immediately on subscribe.
 
 Any QoS change must be recorded in the node README and experiment results because QoS directly affects drop and latency behavior.
+
+P0-013 QoS experiment output:
+
+- Runner: `scripts/run_p0_013_qos_experiment_smoke.sh`.
+- CSV: `runtime/results/qos/p0_013_qos_results.csv`.
+- Markdown report: `runtime/results/qos/p0_013_qos_report.md`.
+- Matrix: 100Hz and 200Hz, BestEffort and Reliable, KeepLast depth 10 and 50.
+- CSV records scenario name, frequency, publisher/subscriber QoS, queue depth, receive rate, drop rate, average latency, p95 latency, p99 latency, CPU, RAM, temperature, and notes.
 
 ## rosbag Topics
 

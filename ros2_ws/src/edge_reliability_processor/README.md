@@ -46,6 +46,14 @@ ros2 topic info /edge/metrics/pipeline -v
 ros2 topic echo --once /edge/metrics/pipeline edge_reliability_msgs/msg/PipelineMetrics
 ```
 
+## QoS Parameters
+
+`sensor_processor` defaults to a BestEffort subscription because the P0 fake sensor defaults to a high-rate BestEffort stream.
+P0-013 adds `sensor_qos_reliability` so experiment runs can compare matched BestEffort and Reliable sensor QoS profiles without changing code.
+
+- `sensor_qos_depth`: KeepLast depth for the sensor subscription.
+- `sensor_qos_reliability`: `best_effort` or `reliable`.
+
 ## Subscriber Delay Fault Injection
 
 P0-009 adds a YAML-configurable processing delay:

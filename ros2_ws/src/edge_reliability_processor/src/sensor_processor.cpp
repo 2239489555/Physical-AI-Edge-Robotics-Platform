@@ -28,6 +28,7 @@ public:
     latency_warn_ms_ = declare_parameter<double>("latency_warn_ms", 20.0);
     latency_unhealthy_ms_ = declare_parameter<double>("latency_unhealthy_ms", 50.0);
     sensor_qos_depth_ = declare_parameter<int>("sensor_qos_depth", 10);
+    sensor_qos_reliability_ = declare_parameter<std::string>("sensor_qos_reliability", "best_effort");
     metrics_qos_depth_ = declare_parameter<int>("metrics_qos_depth", 10);
     rate_window_seconds_ = declare_parameter<double>("rate_window_seconds", 5.0);
     latency_window_size_ = declare_parameter<int>("latency_window_size", 1000);
@@ -38,7 +39,11 @@ public:
     accumulator_.configure(expected_hz_, rate_window_seconds_, latency_window_size_);
 
     auto sensor_qos = rclcpp::QoS(rclcpp::KeepLast(static_cast<size_t>(sensor_qos_depth_)));
-    sensor_qos.best_effort();
+    if (sensor_qos_reliability_ == "reliable") {
+      sensor_qos.reliable();
+    } else {
+      sensor_qos.best_effort();
+    }
 
     auto metrics_qos = rclcpp::QoS(rclcpp::KeepLast(static_cast<size_t>(metrics_qos_depth_)));
     metrics_qos.reliable();
@@ -58,7 +63,7 @@ public:
       get_logger(),
       "event=startup node=sensor_processor sensor_topic=%s sensor_type=edge_reliability_msgs/msg/SensorSample "
       "metrics_topic=%s metrics_type=edge_reliability_msgs/msg/PipelineMetrics expected_hz=%.3f "
-      "metrics_publish_hz=%.3f sensor_qos_depth=%d sensor_qos_reliability=best_effort "
+      "metrics_publish_hz=%.3f sensor_qos_depth=%d sensor_qos_reliability=%s "
       "metrics_qos_depth=%d metrics_qos_reliability=reliable rate_window_seconds=%.3f "
       "latency_window_size=%d latency_warn_ms=%.3f latency_unhealthy_ms=%.3f "
       "processing_delay_enabled=%s processing_delay_ms=%.3f",
@@ -67,6 +72,7 @@ public:
       expected_hz_,
       metrics_publish_hz_,
       sensor_qos_depth_,
+      sensor_qos_reliability_.c_str(),
       metrics_qos_depth_,
       rate_window_seconds_,
       latency_window_size_,
@@ -134,6 +140,14 @@ private:
         "event=parameter_fallback parameter=sensor_qos_depth value=%d fallback=10",
         sensor_qos_depth_);
       sensor_qos_depth_ = 10;
+    }
+
+    if (sensor_qos_reliability_ != "best_effort" && sensor_qos_reliability_ != "reliable") {
+      RCLCPP_WARN(
+        get_logger(),
+        "event=parameter_fallback parameter=sensor_qos_reliability value=%s fallback=best_effort",
+        sensor_qos_reliability_.c_str());
+      sensor_qos_reliability_ = "best_effort";
     }
 
     if (metrics_qos_depth_ < 1) {
@@ -258,6 +272,7 @@ private:
   std::string sensor_topic_{"/edge/sensors/fake_primary"};
   std::string metrics_topic_{"/edge/metrics/pipeline"};
   std::string metrics_frame_id_{"pipeline_metrics_frame"};
+  std::string sensor_qos_reliability_{"best_effort"};
   double expected_hz_{100.0};
   double metrics_publish_hz_{1.0};
   double latency_warn_ms_{20.0};

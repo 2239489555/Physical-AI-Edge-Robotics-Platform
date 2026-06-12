@@ -80,3 +80,11 @@ Use `run_p0_012_system_health_smoke.sh` on Jetson to build and test the pipeline
 Use `verify_p0_012_smoke_report.ps1` from Windows to check a returned P0-012 `runtime/results/p0_012_smoke_report.txt` before marking the issue complete.
 
 Use `verify_p0_012_completion_gate.ps1` from Windows after a returned P0-012 report exists to run both the static system-health gate and the returned-report gate.
+
+Use `verify_p0_013_qos_experiment.ps1` from Windows to check that the P0-013 QoS runner covers 100Hz/200Hz, BestEffort/Reliable, KeepLast depths, CSV/report outputs, runtime artifact hygiene, and documentation.
+
+Use `run_p0_013_qos_experiment_smoke.sh` on Jetson to run the QoS experiment matrix and write `runtime/results/qos/p0_013_qos_results.csv` plus `runtime/results/qos/p0_013_qos_report.md`.
+
+Use `verify_p0_013_smoke_report.ps1` from Windows to check a returned P0-013 `runtime/results/p0_013_smoke_report.txt` before marking the issue complete.
+
+Use `verify_p0_013_completion_gate.ps1` from Windows after a returned P0-013 report exists to run both the static QoS-experiment gate and the returned-report gate.

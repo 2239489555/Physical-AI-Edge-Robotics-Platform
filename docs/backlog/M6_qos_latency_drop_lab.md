@@ -23,6 +23,13 @@ Robot communication reliability depends on QoS, queue depth, subscriber speed, p
 - Interface contract updates.
 - Interview artifacts.
 
+## Current Progress
+
+- P0-013 QoS experiment runner is implemented and awaiting Jetson smoke evidence.
+- `scripts/run_p0_013_qos_experiment_smoke.sh` runs 100Hz and 200Hz scenarios across BestEffort/Reliable and KeepLast depth 10/50.
+- Results are written to `runtime/results/qos/p0_013_qos_results.csv` and `runtime/results/qos/p0_013_qos_report.md`.
+- Generated per-scenario YAML stays under `runtime/tmp/p0-013/configs/`; launch logs stay under `runtime/logs/qos/`.
+
 ## Technical Constraints
 
 - Use project-local runtime results directory.

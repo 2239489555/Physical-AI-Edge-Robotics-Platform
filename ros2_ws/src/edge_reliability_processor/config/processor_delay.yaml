@@ -8,6 +8,7 @@ sensor_processor:
     latency_warn_ms: 20.0
     latency_unhealthy_ms: 50.0
     sensor_qos_depth: 10
+    sensor_qos_reliability: best_effort
     metrics_qos_depth: 10
     rate_window_seconds: 5.0
     latency_window_size: 1000
