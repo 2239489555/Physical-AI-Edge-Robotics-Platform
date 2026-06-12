@@ -136,8 +136,11 @@ foreach ($text in @(
     'QOS_RESULT_DIR="$RESULT_DIR/qos"',
     'QOS_LOG_DIR="$LOG_DIR/qos"',
     'CONFIG_DIR="$TMP_DIR/configs"',
+    "as_yaml_double",
     "write_fake_config",
     "write_processor_config",
+    "publish_hz: `$hz_double",
+    "expected_hz: `$hz_double",
     "run_qos_scenario",
     "wait_for_topic_type",
     "launch_and_check ACTIVE_FAKE_PID",
@@ -165,7 +168,9 @@ foreach ($forbidden in @(
     "`n/tmp/p0-013",
     'ACTIVE_FAKE_PID="$(launch_and_check',
     'ACTIVE_PROCESSOR_PID="$(launch_and_check',
-    'ACTIVE_SYSTEM_PID="$(launch_and_check'
+    'ACTIVE_SYSTEM_PID="$(launch_and_check',
+    "publish_hz: `$hz`n",
+    "expected_hz: `$hz`n"
 )) {
     Assert-NotContains "scripts/run_p0_013_qos_experiment_smoke.sh" $smokeScript $forbidden
 }

@@ -186,11 +186,24 @@ summary_value() {
   awk -F': ' -v key="$key" '$1 == key { value = $2 } END { print value }' "$file"
 }
 
+as_yaml_double() {
+  local value="$1"
+
+  if [[ "$value" == *.* ]]; then
+    printf '%s\n' "$value"
+  else
+    printf '%s.0\n' "$value"
+  fi
+}
+
 write_fake_config() {
   local path="$1"
   local hz="$2"
   local reliability="$3"
   local depth="$4"
+  local hz_double
+
+  hz_double="$(as_yaml_double "$hz")"
 
   cat > "$path" <<EOF
 fake_sensor_adapter:
@@ -198,7 +211,7 @@ fake_sensor_adapter:
     topic: /edge/sensors/fake_primary
     sensor_id: fake_primary
     frame_id: fake_sensor_frame
-    publish_hz: $hz
+    publish_hz: $hz_double
     status_mode: "ok"
     fault_mode: "off"
     drop_enabled: false
@@ -214,6 +227,9 @@ write_processor_config() {
   local hz="$2"
   local reliability="$3"
   local depth="$4"
+  local hz_double
+
+  hz_double="$(as_yaml_double "$hz")"
 
   cat > "$path" <<EOF
 sensor_processor:
@@ -221,7 +237,7 @@ sensor_processor:
     sensor_topic: /edge/sensors/fake_primary
     metrics_topic: /edge/metrics/pipeline
     metrics_frame_id: pipeline_metrics_frame
-    expected_hz: $hz
+    expected_hz: $hz_double
     metrics_publish_hz: 1.0
     latency_warn_ms: 20.0
     latency_unhealthy_ms: 50.0
