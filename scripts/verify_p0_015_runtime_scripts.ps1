@@ -190,23 +190,25 @@ foreach ($text in @(
 }
 
 foreach ($text in @(
-    "Status: implementation prepared, awaiting Jetson smoke evidence",
+    "Status: completed, Jetson verified 2026-06-12",
     "scripts/start_runtime.sh",
     "scripts/stop_runtime.sh",
     "runtime/run/p0_runtime",
     "runtime/logs/runtime",
-    "Completion requires returned Jetson smoke evidence"
+    "Jetson verification evidence",
+    "SMOKE_EXIT_STATUS=0",
+    "Manifest PID checks reported all four project-started process trees stopped"
 )) {
     Assert-Contains "P0-015 issue" $issue $text
 }
 
 foreach ($text in @(
     "P0-015",
-    "start/stop runtime",
-    "Jetson smoke"
+    "start/stop runtime"
 )) {
     Assert-Contains "issue index" $index $text
 }
+Assert-NotContains "issue index" $index "Jetson smoke"
 
 foreach ($text in @(
     "start_runtime.sh",

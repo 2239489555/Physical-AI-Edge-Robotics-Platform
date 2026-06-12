@@ -8,6 +8,11 @@ Create company-server-friendly project-local runtime scripts for start, stop, he
 
 The project must behave like an edge runtime without polluting a company-owned Jetson server. systemd and Docker are allowed later as templates, but P0 should first prove controlled scripts.
 
+## Progress Notes
+
+- P0-015 project-local start/stop runtime scripts are completed and Jetson verified on 2026-06-12.
+- The verified lifecycle starts `fake_sensor_adapter`, `sensor_processor`, `system_metrics_node`, and `health_monitor`, writes logs under `runtime/logs/runtime/`, stores PID state under `runtime/run/p0_runtime/`, and stops only manifest-recorded process trees.
+
 ## Inputs
 
 - P0 ROS 2 pipeline.
